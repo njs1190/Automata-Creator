@@ -1,2 +1,2 @@
-DFA Creator/simulator
+DFA Creator/Simulator
 =======================
