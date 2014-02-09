@@ -1,2 +1,2 @@
-Lazarus-House-Inventory
+DFA Creator/simulator
 =======================
