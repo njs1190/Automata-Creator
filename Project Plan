@@ -1,81 +1,94 @@
+Automata Creator - Project Plan
 
+1. Purpose of this Plan
+This document will provide the reader with a clear definition of the project phases and key 
+milestones of the Automata Creator Project. This document will also describe the goals and 
+objectives met during each project phase.
 
+2.Project Phases and Key Milestones
+	II. Project Implementation Planning: This milestone has been completed. During this phase team
+	members discussed the implementation phases and were assigned specific tasks for the future
+	development of Automata Creator.
 
-Automata Creator
-Jidaeno
+	III.  Pseudo-code: During this milestone teams members will develop pseudo-code meant to guide the 
+	team during the implementation of the features included in Automata Creator. These features include
+	menu options, dragging and dropping a state object onto the canvas, deleting a state, validating and 
+	simulating an automaton, acquiring help, etc. This phase must happen before any of the subsequent 
+	feature phases because no functionality should be implemented without detailed pseudo-code to ensure
+	well-designed software architecture.
 
+	III.  Feature Implementation: During this milestone we will implement all the features of Automata 
+	Creator into steps including:
 
-Project Plan
+		i. Feature 1 – User Interface: During this phase the user interface components are created 
+		and laid out as described in the Functional Specification document. The user interface 
+		consists of the menu bar, the State Object Window, the Output Window, the canvas, the string 
+		input textbox and lastly a series of buttons that control the simulation of the automaton. 
+		We are allowing the user interface to be coded during the pseudo-code phase because no 
+		implementation is being coded. This phase is simply creating the shell of the Automata Creator. 
+		The user interface was already started in order to obtain screen shots for documentation.
 
+		ii. Feature 2 – States: This phase will involve implementing the drag and drop functionality
+		of the state objects onto the canvas. In this phase we will also implement the automatic 
+		placement of the state objects onto the canvas if the insert state menu options is used.
+		Additionally, during this phase we will implement the code that allows the deletion of states. 
 
-3/31/2014
-Revision 1.0.0.0
+		iii. Feature 3 –Transitions: During this phase we will implement the ability to insert 
+		transitions from one state to another and specify the symbol or symbols the transition 
+		occurs on. During this phase we will also implement the functionality of allowing a 
+		transition to be modified meaning a user may readjust the destination of a transition, or 
+		the symbol the transition occurs on. This phase must happen after Feature 2 phase because 
+		a transition cannot be added unless a state exists on the canvas first.
+	
+		iv. Feature 4 – Validation and Simulation: During this phase we will implement the 
+		validation of an automaton. The validation criteria are described in detail in the 
+		Functional Specification document. In this phase we will also implement the simulation of 
+		an automaton. This will include the highlighting of the steps, the ability to step forward 
+		or step backwards, starting or pausing simulation, etc. This must occur after the previous 
+		feature phases because there will be nothing to validate unless both states and transitions 
+		exist. 
 
+		v. Feature 5 – Additional Menu Options: During this phase we will implement the functionality
+		of the additional menu options that have not yet been addressed in the previous phases. 
+		These menu options include saving an automaton, importing an automaton, closing Automata
+		Creator, etc. This phase may happen simultaneous as Feature 4 phases because the additional 
+		menu options have no affect on the validation or simulation of an automaton. As long as 
+		Feature 1 – Feature 3 phases have been implemented the additional menu options may be 
+		worked on. For example, now that states and transitions can be added to the canvas we can 
+		then work on copying the canvas as an image, or saving the current automaton and opening a 
+		saved automaton. This will not affect the validation nor will it affect the simulation of an 
+		automaton. 
+	IV.   User Manual Draft: A users manual will need to be created to aid the user in creating and 
+	simulating automata in Automata Creator. This documentation will also be made accessible via the 
+	menu options. 
 
+	V. Feature Freeze:  At this time we are not able to add any more features to the Automata Creator. 
+	During the feature freeze milestone we will:
 
+		i. Finalize Features: During this phase we will make sure that all implementation for 
+		every feature of Automata Creator is finished. 
 
+		ii. Testing: During this phase a design verification document will be created. This 
+		design verification document is essentially a suite of tests written in order to test the 
+		proper functionality of the software. Once the document has been written each team member 
+		will perform the design verification test and note any errors found during execution. Once 
+		each member has performed the test and notes have been taken the team will reconvene and 
+		discuss any modifications that need to be made to the software in order to fix known errors.  
 
+		iii. Bug Fixes: During this phase all bugs found during the testing phase will be 
+		addressed and fixed.
 
+	VI. Code Freeze: During this time we are unable to make any changes to the code. We will use this 
+	time between the code freeze and the end of the semester to finalize any documents and prepare for 
+	the final presentation. 
 
+	VII. User Manual Final Draft: During this milestone user documentation will be modified to reflect 
+	changes deemed necessary after user testing and also to reflect the finalized features.
 
+	VIII. Poster: A poster must be created to display during Science and Engineering Day, on May 1st.
 
+	IX.  Presentation: During this allotted time our team needs to collaborate and prepare for a final
+	presentation of Automata Creator to present to our client, our manager, and the board. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1.	Purpose of this Plan
-This document will provide the reader with a clear definition of the project phases and key milestones of the Automata Creator Project. This document will also describe the goals and objectives met during each project phase.
-
-2.	 Project Phases and Key Milestones: 
-
-
- 
-	Figure 2.0 – A Gantt Chart displaying the Automata Creator project plan phases
-
-I.	  Project Implementation Planning: This milestone has been completed. During this phase team members discussed the implementation phases and were assigned specific tasks for the future development of Automata Creator.
-
-II.  Pseudo-code: During this milestone teams members will develop pseudo-code meant to guide the team during the implementation of the features included in Automata Creator. These features include menu options, dragging and dropping a state object onto the canvas, deleting a state, validating and simulating an automaton, acquiring help, etc. This phase must happen before any of the subsequent feature phases because no functionality should be implemented without detailed pseudo-code to ensure well-designed software architecture.
-
-III.  Feature Implementation: During this milestone we will implement all the features of Automata Creator into steps including:
-
-i.	Feature 1 – User Interface: During this phase the user interface components are created and laid out as described in the Functional Specification document. The user interface consists of the menu bar, the State Object Window, the Output Window, the canvas, the string input textbox and lastly a series of buttons that control the simulation of the automaton. We are allowing the user interface to be coded during the pseudo-code phase because no implementation is being coded. This phase is simply creating the shell of the Automata Creator. The user interface was already started in order to obtain screen shots for documentation.
-
-ii.	Feature 2 – States: This phase will involve implementing the drag and drop functionality of the state objects onto the canvas. In this phase we will also implement the automatic placement of the state objects onto the canvas if the insert state menu options is used. Additionally, during this phase we will implement the code that allows the deletion of states. 
-
-iii.	Feature 3 –Transitions: During this phase we will implement the ability to insert transitions from one state to another and specify the symbol or symbols the transition occurs on. During this phase we will also implement the functionality of allowing a transition to be modified meaning a user may readjust the destination of a transition, or the symbol the transition occurs on. This phase must happen after Feature 2 phase because a transition cannot be added unless a state exists on the canvas first.
-
-iv.	Feature 4 – Validation and Simulation: During this phase we will implement the validation of an automaton. The validation criteria are described in detail in the Functional Specification document. In this phase we will also implement the simulation of an automaton. This will include the highlighting of the steps, the ability to step forward or step backwards, starting or pausing simulation, etc. This must occur after the previous feature phases because there will be nothing to validate unless both states and transitions exist. 
-
-v.	Feature 5 – Additional Menu Options: During this phase we will implement the functionality of the additional menu options that have not yet been addressed in the previous phases. These menu options include saving an automaton, importing an automaton, closing Automata Creator, etc. This phase may happen simultaneous as Feature 4 phases because the additional menu options have no affect on the validation or simulation of an automaton. As long as Feature 1 – Feature 3 phases have been implemented the additional menu options may be worked on. For example, now that states and transitions can be added to the canvas we can then work on copying the canvas as an image, or saving the current automaton and opening a saved automaton. This will not affect the validation nor will it affect the simulation of an automaton. 
-
-IV.   User Manual Draft: A users manual will need to be created to aid the user in creating and simulating automata in Automata Creator. This documentation will also be made accessible via the menu options. 
-
-V. Feature Freeze:  At this time we are not able to add any more features to the Automata Creator. During the feature freeze milestone we will:
-
-i.	Finalize Features: During this phase we will make sure that all implementation for every feature of Automata Creator is finished. 
-
-ii.	Testing: During this phase a design verification document will be created. This design verification document is essentially a suite of tests written in order to test the proper functionality of the software. Once the document has been written each team member will perform the design verification test and note any errors found during execution. Once each member has performed the test and notes have been taken the team will reconvene and discuss any modifications that need to be made to the software in order to fix known errors.  
-
-iii.	Bug Fixes: During this phase all bugs found during the testing phase will be addressed and fixed.
-
-VI. Code Freeze: During this time we are unable to make any changes to the code. We will use this time between the code freeze and the end of the semester to finalize any documents and prepare for the final presentation. 
-
-VII. User Manual Final Draft: During this milestone user documentation will be modified to reflect changes deemed necessary after user testing and also to reflect the finalized features.
-
-VIII. Poster: A poster must be created to display during Science and Engineering Day, on May 1st.
-
-IX.  Presentation: During this allotted time our team needs to collaborate and prepare for a final presentation of Automata Creator to present to our client, our manager, and the board. 
 
 
