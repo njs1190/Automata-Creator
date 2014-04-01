@@ -1,2 +1,2 @@
-DFA Creator/Simulator
+Automata Creator
 =======================
