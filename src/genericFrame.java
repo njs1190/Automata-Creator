@@ -13,8 +13,7 @@ import java.net.URL;
 import javax.swing.*;
 import javax.swing.event.MenuListener;
 
-import basicFrame.GridBagEx1;
- 
+
 public class genericFrame implements ActionListener {
  
 	  protected JTextArea outputTextArea;
@@ -248,23 +247,23 @@ public class genericFrame implements ActionListener {
 							String imgLocation = "images/"
 							+ imageName
 							+ ".gif";
-							URL imageURL = GridBagEx1.class.getResource(imgLocation);
+//							URL imageURL = GridBagEx1.class.getResource(imgLocation);
 							
 							//Create and initialize the button.
 							JButton button = new JButton();
 							button.setActionCommand(actionCommand);
 							button.setToolTipText(toolTipText);
 							button.addActionListener(this);
-
-							if (imageURL != null) 
-								{                      //image found
-								button.setIcon(new ImageIcon(imageURL, altText));
-								} 
-							else {                                     //no image found
 							button.setText(altText);
-							System.err.println("Resource not found: "
-							+ imgLocation);
-							}
+//							if (imageURL != null) 
+//								{                      //image found
+//								button.setIcon(new ImageIcon(imageURL, altText));
+//								} 
+//							else {                                     //no image found
+//							button.setText(altText);
+//							System.err.println("Resource not found: "
+//							+ imgLocation);
+//							}
 
 	return button;
 	}	
@@ -326,23 +325,23 @@ public class genericFrame implements ActionListener {
 						String imgLocation = "images/"
 						+ imageName
 						+ ".gif";
-						URL imageURL = GridBagEx1.class.getResource(imgLocation);
+						//URL imageURL = GridBagEx1.class.getResource(imgLocation);
 						
 						//Create and initialize the button.
 						JButton button = new JButton();
 						button.setActionCommand(actionCommand);
 						button.setToolTipText(toolTipText);
 						button.addActionListener(this);
-
-						if (imageURL != null) 
-							{                      //image found
-							button.setIcon(new ImageIcon(imageURL, altText));
-							} 
-						else {                                     //no image found
-						button.setText(altText);
-						System.err.println("Resource not found: "
-						+ imgLocation);
-						}
+//
+//						if (imageURL != null) 
+//							{                      //image found
+//							button.setIcon(new ImageIcon(imageURL, altText));
+//							} 
+//						else {                                     //no image found
+//						button.setText(altText);
+//						System.err.println("Resource not found: "
+//						+ imgLocation);
+//						}
 
 return button;
 }	
