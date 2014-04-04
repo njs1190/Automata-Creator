@@ -1,0 +1,116 @@
+package automataCreator;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
+public class menu {
+
+	
+	public static JMenuBar createMenuBar()
+    {
+        //Create the menu bar.
+        JMenuBar menuBar = new JMenuBar();
+
+        //Add a JMenu
+        JMenu file = new JMenu("File");
+        JMenu edit = new JMenu("Edit");
+        JMenu insert = new JMenu("Insert");
+        JMenu help = new JMenu("Help"); 
+        
+        menuBar.add(file);
+        menuBar.add(edit);
+        menuBar.add(insert);
+        menuBar.add(help);
+
+        
+     //Build File Menu
+        JMenu save = new JMenu("Save");  
+        JMenuItem newAutomata = new JMenuItem("New");
+        JMenuItem fileSave = new JMenuItem("as Automota Creator File");
+        JMenuItem imageSave = new JMenuItem("as Image");
+        JMenuItem importFile = new JMenuItem("Import");
+        JMenuItem close = new JMenuItem("Close");
+        
+        
+      
+        
+        file.add(newAutomata);
+        file.add(importFile);
+        file.add(save);
+        save.add(fileSave);
+        save.add(imageSave);
+        file.add(close);
+        
+     //Build Edit Menu
+        JMenuItem undo = new JMenuItem("Undo");
+        JMenuItem redo = new JMenuItem("Redo");
+        JMenuItem deleteState = new JMenuItem("Delete State");
+        JMenuItem copyCanvas = new JMenuItem("Copy Canvas");
+        JMenuItem clearCanvas = new JMenuItem("Clear Canvas");
+        
+        edit.add(undo);
+        edit.add(redo);
+        edit.add(deleteState);
+        edit.add(copyCanvas);
+        edit.add(clearCanvas);
+        
+        
+      //Build Insert Menu  
+        JMenu state = new JMenu("State");
+        JMenuItem transition = new JMenuItem("Transition");
+        JMenuItem string = new JMenuItem("String");
+
+        //Build State Menu
+        JMenuItem start = new JMenuItem("Start");
+        JMenuItem startAccept = new JMenuItem("Start Accept");
+        JMenuItem intermediate = new JMenuItem("Intermediate");
+        JMenuItem accept = new JMenuItem("Accept");
+        
+        insert.add(state);
+        state.add(start);
+        state.add(startAccept);
+        state.add(intermediate);
+        state.add(accept);
+  
+       insert.add(transition);
+       insert.add(string);
+        
+        
+      
+        
+        
+        
+     
+      //Build Help Menu
+      JMenuItem about = new JMenuItem("About");   
+      JMenuItem quickHelp = new JMenuItem("Quick Help");
+      
+      help.add(about);
+//      about.addActionListener(new ActionListener() 
+//      {
+//          public void actionPerformed(ActionEvent e) 
+//          {
+//        	  JFrame popUpFrame = new JFrame();
+//        	 
+//        	  JOptionPane.showMessageDialog( "Eggs are not supposed to be green.");
+//          }
+//
+//      });
+     
+     
+
+
+      
+      help.add(quickHelp);
+        
+
+       return menuBar;
+    
+    
+    
+    }
+	
+	
+	
+}
