@@ -14,7 +14,7 @@ import java.net.URL;
 import javax.swing.*;
 import javax.swing.event.MenuListener;
 import automataCreator.simBar;
-import automataCreator.fileMenu;
+import automataCreator.menu;
 import automataCreator.outPanel;
 import automataCreator.statePanel;
 
@@ -83,7 +83,7 @@ public class MainFrame {
      frame.setContentPane(frameTemplate.contentPane());
     
    //add menu to frame
-     frame.setJMenuBar(fileMenu.createMenuBar());
+     frame.setJMenuBar(menu.createMenuBar());
  
      
    // other frame parts
