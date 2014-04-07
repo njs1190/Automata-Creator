@@ -7,7 +7,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.EmptyBorder;
 
 public class simBar implements ActionListener {
 	
@@ -18,7 +22,7 @@ public class simBar implements ActionListener {
         
         JPanel simControl = new JPanel();
         simControl.setSize(150, 50);
-//        simControl.setBackground(Color.GRAY);
+
      
         //first button
         button = makeSimulationButton("previousSymbol", "previousSymbol",
@@ -37,14 +41,21 @@ public class simBar implements ActionListener {
                                       "Go to next symbol on tape input",
                                       "Next");
         simControl.add(button);
+        
+        SpinnerModel timeSpinner = new SpinnerNumberModel(1, 1, 10, 1);     
+        JSpinner spinner = new JSpinner(timeSpinner);
  
        simBarPanel.add(simControl,BorderLayout.WEST);
-        //separator
-        
+       simBarPanel.add(spinner);
+       
+       JPanel p = new JPanel();
+       p.setBorder(new EmptyBorder(10, 10, 10, 80) );
+       
+       simBarPanel.add(p);
+       
        JPanel tapePanel = new JPanel();
-
         JLabel tapeLabel = new JLabel("Tape Input");
-        JTextField tapeInput = new JTextField("input binary string");
+        JTextField tapeInput = new JTextField();
         tapeInput.setColumns(10);
         
      
