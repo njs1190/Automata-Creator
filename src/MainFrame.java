@@ -17,6 +17,7 @@ import automataCreator.simBar;
 import automataCreator.menu;
 import automataCreator.outPanel;
 import automataCreator.statePanel;
+import automataCreator.myCanvas;
 
 
 public class MainFrame {
@@ -37,27 +38,30 @@ public class MainFrame {
         
        
         
-      
+      //leftHand side panel for state Object buttons
         JPanel objectPanel = new JPanel(new GridLayout(4,1));
         objectPanel.setBackground(Color.GRAY);
         statePanel.buildObjectPanel(objectPanel);
         
+        
+       //Bottom outputPanel for user feedback and string process tracking 
         JPanel outputPanel = new JPanel();
         outPanel.buildOutputPanel(outputPanel);
         
         
         
-        JPanel canvasPanel = new JPanel();
-        canvasPanel.setBackground(Color.white);
-        canvasPanel.setSize(300, 260);
-        canvasPanel.add(new Canvas());
+        //Create scrollPane for canvas, 
+        JScrollPane canvasPane = new JScrollPane();
+        myCanvas.addCanvas(canvasPane);
+       
+      
         
        
         
         totalGUI.add(simBarPanel, BorderLayout.NORTH);
         totalGUI.add(objectPanel, BorderLayout.WEST);
         totalGUI.add(outputPanel, BorderLayout.SOUTH);
-        totalGUI.add(canvasPanel, BorderLayout.CENTER);
+        totalGUI.add(canvasPane, BorderLayout.CENTER);
         
 
         totalGUI.setOpaque(true);
