@@ -39,7 +39,7 @@ public class statePanel {
        
     }
 	
-	public static JButton makeObjectPanel(String imageName,
+	public static  JButton makeObjectPanel(String imageName,
 	            String actionCommand,
 	            String toolTipText,
 	          String altText ) 
@@ -53,6 +53,7 @@ public class statePanel {
 							//Create and initialize the button.
 							JButton button = new JButton();
 							button.setActionCommand(actionCommand);
+							
 							button.setToolTipText(toolTipText);
 							//button.addActionListener(this);
 							button.setText(altText);
