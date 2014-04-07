@@ -1,8 +1,12 @@
 package automataCreator;
 
+import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.filechooser.FileView;
 
 public class menu {
 
@@ -33,6 +37,14 @@ public class menu {
         JMenuItem close = new JMenuItem("Close");
         
         
+        
+        
+        UIDefaults defaults = UIManager.getDefaults( );
+        Icon floppyDriveIcon = defaults.getIcon( "FileView.floppyDriveIcon" );
+        
+        
+        save.setIcon(floppyDriveIcon);
+        
       
         
         file.add(newAutomata);
@@ -41,6 +53,7 @@ public class menu {
         save.add(fileSave);
         save.add(imageSave);
         file.add(close);
+        
         
      //Build Edit Menu
         JMenuItem undo = new JMenuItem("Undo");
@@ -76,7 +89,9 @@ public class menu {
        insert.add(transition);
        insert.add(string);
         
-        
+      
+       
+      
       
         
         
