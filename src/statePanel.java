@@ -3,13 +3,17 @@ package automataCreator;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class statePanel {
+public class statePanel 
+{	
+	public statePanel()
+	{
 	
-	public static void buildObjectPanel (JPanel objectPanel) {
+	}
+	
+	public void BuildObjectPanel (JPanel objectPanel)
+	{
         JButton button = null;
- 
-        
-    
+
         //first button
         button = makeObjectPanel("start", "previousSymbol",
                 "click and drag to add start state",
@@ -39,11 +43,8 @@ public class statePanel {
        
     }
 	
-	public static  JButton makeObjectPanel(String imageName,
-	            String actionCommand,
-	            String toolTipText,
-	          String altText ) 
-	    				{
+	public static  JButton makeObjectPanel(String imageName, String actionCommand, String toolTipText, String altText ) 
+	{
 							//Look for the image.
 							String imgLocation = "images/"
 							+ imageName
@@ -67,7 +68,7 @@ public class statePanel {
 //							+ imgLocation);
 //							}
 
-	return button;
+							return button;
 	}	
 	
 	
