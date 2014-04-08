@@ -5,13 +5,18 @@ import java.util.TimerTask;
 
 public class SaveTimer 
 {
-	private Timer timer = null;
+	// Private members
+	private Timer timer = null; // Timer object 	
 	
+	// Constructor
 	public SaveTimer()
 	{
 	    timer = new Timer();
 	}
 	
+	// PRE:
+	// POST: A timer will start and will save the test every minute in the
+	// case of an unexpected failure
 	public void StartTimer()
 	{
 	    timer.schedule(new RunTask(), 60000, 60000);							
