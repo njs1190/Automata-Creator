@@ -13,10 +13,15 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
-public class simBar implements ActionListener {
+public class simBar implements ActionListener 
+{
+	public simBar()
+	{
+		
+	}	
 	
-	
-	public static void buildSimBar(JPanel simBarPanel) {
+	public void BuildSimBar(JPanel simBarPanel) 
+	{
         JButton button = null;
  
         
