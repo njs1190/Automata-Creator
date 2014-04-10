@@ -1,19 +1,15 @@
 package automataCreator;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
-
+import java.awt.Canvas;
+import java.awt.Color;
 import java.util.ArrayList;
 
-class myCanvas extends JPanel implements MouseListener
+public class myCanvas extends JPanel implements MouseListener
 {
-    Image img;      // Contains the image to draw on MyCanvas
     ArrayList<State> _states; // The list of states that have been added to the canvas
     ArrayList<Transition> _transitions; // The list of transitions that have been added to the canvas
     
@@ -22,10 +18,35 @@ class myCanvas extends JPanel implements MouseListener
     	_states = new ArrayList<State>();
     	_transitions = new ArrayList<Transition>();    	
     }
-
+    
+    public myCanvas(ArrayList<State> states, ArrayList<Transition> transitions)
+    {
+    	_states = states;
+    	_transitions = transitions;
+    }
+    
+    public void setStates(ArrayList<State> states)
+    {
+    	_states = states;
+    }
+    
+    public void setTransitions(ArrayList<Transition> transitions)
+    {
+    	_transitions = transitions;
+    }
+    
+    public ArrayList<State> getStates()
+    {
+    	return _states;
+    }
+    
+    public ArrayList<Transition> getTransitions()
+    {
+    	return _transitions;
+    }
+  
     public void AddCanvas(JScrollPane canvasPanel)
     {  	
-    
     	Canvas automataCanvas = new Canvas();
     	automataCanvas.setSize(700, 320);
     	automataCanvas.setBackground(Color.WHITE);
