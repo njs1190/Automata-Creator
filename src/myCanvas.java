@@ -43,17 +43,28 @@ public class myCanvas extends JPanel implements MouseListener
     public ArrayList<Transition> getTransitions()
     {
     	return _transitions;
+    	
     }
-  
-    public void AddCanvas(JScrollPane canvasPanel)
-    {  	
+    
+      public static void AddCanvas(JPanel canvasPanel)
+    {
+    	
     	Canvas automataCanvas = new Canvas();
-    	automataCanvas.setSize(700, 320);
-    	automataCanvas.setBackground(Color.WHITE);
-		
-    	canvasPanel.add(automataCanvas);
+    	
+    	
+    	
+    		automataCanvas.setSize(800, 510);
+    		automataCanvas.setBackground(Color.WHITE);
+		automataCanvas.setVisible(true);
+  
 
-	}    
+		
+		canvasPanel.add(automataCanvas);
+		
+		
+    }    
+  
+   
 
 	@Override
 	public void mousePressed(MouseEvent e) {
