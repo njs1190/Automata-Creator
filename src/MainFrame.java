@@ -1,4 +1,3 @@
-
 package automataCreator;
 
 // Java classes
@@ -94,15 +93,15 @@ public class MainFrame
         _outputPanel = new outPanel();
         _outputPanel.BuildOutputPanel(outputPanel);
 
-        // Create scrollPane for canvas, 
-        JScrollPane canvasPane = new JScrollPane();
+       // Create scrollPane for canvas, 
+        JPanel canvasPanel = new JPanel();
         _myCanvas = new myCanvas();
-        _myCanvas.AddCanvas(canvasPane);
+        _myCanvas.AddCanvas(canvasPanel);
        
         totalGUI.add(simBarPanel, BorderLayout.NORTH);
         totalGUI.add(stateObjectPanel, BorderLayout.WEST);
         totalGUI.add(outputPanel, BorderLayout.SOUTH);
-        totalGUI.add(canvasPane, BorderLayout.CENTER);    
+        totalGUI.add(canvasPanel, BorderLayout.CENTER);    
 
         totalGUI.setOpaque(true);
         return totalGUI;
