@@ -4,8 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.ArrayList;
-
-
+   
 public class myCanvas extends JPanel implements MouseListener, MouseMotionListener
 {
     ArrayList<State> _states; // The list of states that have been added to the canvas
@@ -252,7 +251,9 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	{					
 		// check if the mouse click event is generated
 		// from a right click
-		if (e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e))
+		if (e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e) &&
+				(e.getX() > X_BORDER && e.getX() < canvas.getWidth()) &&
+				e.getY() > Y_BORDER && e.getY() < canvas.getHeight())
 		{	
 		    // Create the context menu if it is null
 			if (contextMenu == null)
