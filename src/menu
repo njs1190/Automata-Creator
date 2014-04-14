@@ -6,12 +6,12 @@ import javax.swing.*;
 public class menu 
 {	
 	MainFrame _mainFrame;
-	
+
 	public menu(MainFrame mainFrame)
 	{
 		_mainFrame = mainFrame;
 	}
-	
+
 	public JMenuBar createMenuBar()
     {
         //Create the menu bar.
@@ -136,15 +136,43 @@ public class menu
         
         // Add start state sub menu item and action listener 
         JMenuItem start = new JMenuItem("Start");
+        start.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	  _mainFrame.createState(1);
+          }        	
+        });
         
         // Add start/accept state sub menu item and action listener 
         JMenuItem startAccept = new JMenuItem("Start Accept");
+        startAccept.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	  _mainFrame.createState(2);
+          }        	
+        });
         
         // Add intermediate state sub menu item and action listener 
         JMenuItem intermediate = new JMenuItem("Intermediate");
+        intermediate.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	  _mainFrame.createState(3);
+          }        	
+        });
         
         // Add accept state sub menu item and action listener 
         JMenuItem accept = new JMenuItem("Accept");
+        accept.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	  _mainFrame.createState(4);
+          }        	
+        });
         
         // Add transition insert menu item and action listener
         JMenuItem transition = new JMenuItem("Transition");
