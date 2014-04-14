@@ -2,16 +2,18 @@ package automataCreator;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
+
 import java.util.ArrayList;
    
 public class myCanvas extends JPanel implements MouseListener, MouseMotionListener
 {
-    ArrayList<State> _states; // The list of states that have been added to the canvas
-    ArrayList<Transition> _transitions; // The list of transitions that have been added to the canvas
-    JPanel canvas;
-    JPanel stateObjectPanel;
-    JPopupMenu contextMenu; 
+    private ArrayList<State> _states; // The list of states that have been added to the canvas
+    private ArrayList<Transition> _transitions; // The list of transitions that have been added to the canvas
+    private JPanel canvas;
+    private JPanel stateObjectPanel;
+    private JPopupMenu contextMenu; 			  // Context menu used for the canvas when right clicking
     private int stateInserts = 0;			      // This is the number of states on the canvas
     private static final int X_BORDER = 73;       // This is the x location where the canvas is able to be drawn on
     private static final int Y_BORDER = 26; 	  // This is the y location where the canvas is able to be drawn on
@@ -20,6 +22,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
     private int _dragFromY = 0;    				  // bounding box.
     private int _stateX = 50;      				  // x coord - set from drag
     private int _stateY = 50;      				  // y coord - set from drag
+    private State _currentState;				  // Current state being selected
 
     private boolean _canDrag  = false;
     
@@ -75,7 +78,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
         stateObjectPanel = new JPanel(new GridLayout(4,1));
     	
     	//Creates 4 buttons for the state panel
-    	JLabel start = new JLabel("Start");
+        JLabel start = new JLabel("Start");    	
     	JLabel startA = new JLabel("Start Accept");
     	JLabel intermediate = new JLabel("Intermediate");
     	JLabel accept = new JLabel("Accept");
@@ -84,32 +87,34 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
     	stateObjectPanel.add(startA);
     	stateObjectPanel.add(intermediate);
     	stateObjectPanel.add(accept);
-    	/*  this part is if you want to use buttons instead, but I couldn't find a way to 
-    	 * handle button pressed/released, just button clicked
-    	JButton startButton = new JButton("Start");
+
+        /*JButton startButton = new JButton("Start");
     	JButton startAcceptButton = new JButton("Start Accept");
     	JButton intermediate = new JButton("Intermediate");
     	JButton acceptButton = new JButton("Accept");
     		
     	//adds action listeners to the buttons
-    	startButton.addActionListener(new ActionListener(){
-    		public void actionPerformed(ActionEvent e) {
-    			stateEvent(1);
-    			}
-    		});
+    	startButton.addActionListener(new ActionListener()
+    	{
+    		public void actionPerformed(ActionEvent e) 
+    		{
+    			
+    			
+    		}
+    	});
     	startAcceptButton.addActionListener(new ActionListener(){
     		public void actionPerformed(ActionEvent e) {
-    			stateEvent(2);
+    			//stateEvent(2);
     			}
     		});
     	intermediate.addActionListener(new ActionListener(){
     		public void actionPerformed(ActionEvent e) {
-    			stateEvent(3);
+    			//stateEvent(3);
     			}
     		});
     	acceptButton.addActionListener(new ActionListener(){
     		public void actionPerformed(ActionEvent e) {
-    			stateEvent(4);
+    			//stateEvent(4);
     			}
     		});
     	
@@ -117,18 +122,16 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
     	stateObjectPanel.add(startButton);
     	stateObjectPanel.add(startAcceptButton);
     	stateObjectPanel.add(intermediate);
-    	stateObjectPanel.add(acceptButton);
-    	
-    	*/   	
-    	
-    	
+    	stateObjectPanel.add(acceptButton); */	
+    	  	
+        	
     	//adds the state panel to the left side
     	canvasPanel.add(stateObjectPanel, BorderLayout.WEST);
 		
 		canvasPanel.addMouseListener(this); 
         canvasPanel.addMouseMotionListener(this);
         
-        canvas = canvasPanel;
+        canvas = canvasPanel;      
         
     }  
       
@@ -167,52 +170,57 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
     // and can be dragged across the canvas
 	public void mousePressed(MouseEvent e) 
 	{
-		// gets the source of button click  1 = left click, 3 = right click
-		int xInitial = e.getX();  // x-position of mouse
-		int yInitial = e.getY();  // y-position of mouse
-		
 		//checks to see if it is the left click
 		if(SwingUtilities.isLeftMouseButton(e))
 		{
-			//within a bound area of the state panel
-			if(xInitial > 25 && xInitial < 72 && yInitial > 25 && yInitial < 375)
-			{		
-				//DrawState(xInitial - 25, yInitial - 25);
-				xInitial = xInitial + 200;
-				yInitial = yInitial + 200;
-				DrawState(xInitial, yInitial);
-				State s = new State(Data.StateType.STARTFINAL, "q0", 0, xInitial, yInitial, 50);
-				_states.add(s);
-				
+			// gets the source of button click  1 = left click, 3 = right click
+			int xInitial = e.getX();  // x-position of mouse
+			int yInitial = e.getY();  // y-position of mouse
+			
+			State state = isState(xInitial, yInitial);
+			if (state != null)
+			{
 				_canDrag = true;
 				_dragFromX = xInitial - _stateX;  // how far from left
 	            _dragFromY = yInitial - _stateY;  // how far from top
+	            _currentState = state;
 			}
 			
 			else
-				_canDrag = false;			
-		}		
+			{
+				_canDrag = true;
+				DrawState(xInitial - 25, yInitial - 25);
+				State s = new State(Data.StateType.STARTFINAL, "q0", 0, xInitial - 25, yInitial - 25, STATE_DIAMETER);
+				_states.add(s);
+				_currentState = s;
+			}
+		}
 		
+		else
+		{
+			_canDrag = false;
+		}
+			
 	}
 	
 	// PRE: Mouse s dragged
 	// POST: The state is moved wherever the mouse is
 	public void mouseDragged(MouseEvent e) 
 	{
-		if (_canDrag == true)
-		{
-			_stateX = e.getX() - _dragFromX;
-			_stateY = e.getY() - _dragFromY;			
+		if (SwingUtilities.isLeftMouseButton(e)  && _canDrag == true)
+		{			
+			int xInitial = e.getX();
+			int yInitial = e.getY();
+			int x = e.getX() - 25;
+			int y = e.getY() - 25;
 			
-			//Prevent the state moving off the screen sides
-			_stateX = Math.max(_stateX, 0);
-			_stateX = Math.min(_stateX, getWidth() - STATE_DIAMETER);
-            
-            //Prevent the state moving off the top or bottom
-			_stateY = Math.max(_stateY, 0);
-			_stateY = Math.min(_stateY, getHeight() - STATE_DIAMETER);
-            
-            this.repaint(); // Repaint because position changed.
+			_stateX = xInitial - _dragFromX;
+			_stateY = yInitial - _dragFromY;			
+			
+			_currentState.setXPosition(x);
+            _currentState.setYPosition(y);
+            DrawState(x, y);
+            RepaintCanvas();    
 		}
 		
 	}	
@@ -221,14 +229,29 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	// POST: State is dropped where the mouse is released and the state is
 	// added to the collection
 	public void mouseReleased(MouseEvent e) 
-	{
+	{		
 		//when mouse is released, it should check to see if it's within a valid area and 
 		//create the state and label object and send information to canvas to hold
 		//otherwise delete
-		if (SwingUtilities.isLeftMouseButton(e))
+		if (SwingUtilities.isLeftMouseButton(e)) 
 		{
-			//State s = new State(Data.StateType.STARTFINAL, "q0", 0, e.getX() - 25, e.getY() - 25, 50);
-			//_states.add(s);
+			int xInitial = e.getX();
+			int yInitial = e.getY();
+			int x = xInitial - 25;
+			int y = yInitial - 25;
+			
+			if (!(xInitial > X_BORDER))
+			{
+				_states.remove(_currentState);
+				stateObjectPanel.repaint();
+			}
+			
+			else
+			{
+				 DrawState(x, y);
+	            _currentState.setXPosition(x);
+	            _currentState.setYPosition(y);           
+			}
 		}
 	}
 	
@@ -248,7 +271,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	// where a right mouse click event occurs will be created
 	@Override
 	public void mouseClicked(MouseEvent e) 
-	{					
+	{	
 		// check if the mouse click event is generated
 		// from a right click
 		if (e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e) &&
@@ -379,8 +402,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	// POST: A state will be drawn onto the canvas
 	public void DrawState(int x, int y)
 	{
-		Graphics g = canvas.getGraphics();
-		
+		Graphics g = canvas.getGraphics();		
 		g.drawOval(x, y, 50, 50);
 		g.drawString("Q1", x + 19, y + 29);	// center of circle		
 	}
@@ -406,12 +428,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 		int x2 = -1;
 		int y2 = -1; 
 		
-		if (from == to)
-		{
-			// draw arc
-		}
-		
-		else if (from.getYPosition() < to.getYPosition())
+		if (from.getYPosition() < to.getYPosition())
 		{			
 			y1 = from.getYPosition() + 50;					
 			y2 = to.getYPosition();			
@@ -484,8 +501,8 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	// POST: All existing states and transitions will be repainted onto the canvas
 	public void RepaintCanvas()
 	{
-		// Repaint the area of the canvas just where states and transitions can be drawn
-		canvas.repaint(X_BORDER, Y_BORDER, canvas.getWidth(), canvas.getHeight());
+		//canvas.repaint(X_BORDER, Y_BORDER, canvas.getWidth(), canvas.getHeight());
+		canvas.repaint();
 		
 		// Go through all of the states and re-add them to the canvas
 		for (State s : _states)
