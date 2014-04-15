@@ -516,4 +516,106 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			DrawTransition(t.getFrom(), t.getTo());			
 		}
 	}
+
+// PRE: a valid DFA has been created and a string has been entered for simulation
+	// POST: displays Relevant transition graphic
+	public void simTransition(State from, State to, boolean symbolMatch, int displayLength )
+	{	
+
+
+		
+		Graphics g = canvas.getGraphics();
+		Graphics2D g2 = (Graphics2D) g;
+		int x1 = -1;
+		int y1 = -1;
+		int x2 = -1;
+		int y2 = -1; 
+		
+	if (symbolMatch = true )
+	{
+	
+		 
+		if (from.getYPosition() < to.getYPosition())
+		{			
+			y1 = from.getYPosition() + 50;					
+			y2 = to.getYPosition();			
+
+			x1 = from.getXPosition() + 25;
+			x2 = to.getXPosition() + 25;
+
+			
+			
+			
+			
+			g2.setStroke(new BasicStroke(5));
+			g2.setColor(Color.YELLOW);
+			g2.draw(new Line2D.Float(x1, y1, x2, y2));
+			
+			
+			
+
+		}
+
+		else
+		{
+			y1 = from.getYPosition();					
+			y2 = to.getYPosition() + 50;			
+
+			x1 = from.getXPosition() + 25;
+			x2 = to.getXPosition() + 25;
+
+			
+			g2.setStroke(new BasicStroke(5));
+			g2.setColor(Color.red);
+			g2.draw(new Line2D.Float(x1, y1, x2, y2));
+		}
+
+	}	
+	else if(symbolMatch = false)
+	{
+		if (from.getYPosition() < to.getYPosition())
+		{			
+			y1 = from.getYPosition() + 50;					
+			y2 = to.getYPosition();			
+
+			x1 = from.getXPosition() + 25;
+			x2 = to.getXPosition() + 25;
+
+			
+			
+			
+			
+			g2.setStroke(new BasicStroke(5));
+			g2.setColor(Color.red);
+			g2.draw(new Line2D.Float(x1, y1, x2, y2));
+			
+			
+			
+
+		}
+
+		else
+		{
+			y1 = from.getYPosition();					
+			y2 = to.getYPosition() + 50;			
+
+			x1 = from.getXPosition() + 25;
+			x2 = to.getXPosition() + 25;
+
+			g2.setStroke(new BasicStroke(5));
+			g2.setColor(Color.red);
+			g2.draw(new Line2D.Float(x1, y1, x2, y2));
+		}
+
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	}
+
 }
