@@ -1,11 +1,13 @@
 package automataCreator;
 
 import java.awt.event.*;
+
 import javax.swing.*;
 
 public class menu 
 {	
 	MainFrame _mainFrame;
+	private JOptionPane aboutBox;
 
 	public menu(MainFrame mainFrame)
 	{
@@ -199,6 +201,18 @@ public class menu
         JMenuItem about = new JMenuItem("About"); 
         ImageIcon aboutIcon = new ImageIcon("Images/information.png");            
         about.setIcon(aboutIcon);
+        about.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	  
+        	  
+        	  JOptionPane.showMessageDialog(aboutBox, "The Automata Creator is a standalone desktop application that can be \n installed across multiple platforms such as Windows and Linux.\n The Automata Creator will allow both educators and students to create, edit, simulate, and store a \n DFA. Additionally, the application will allow users to import an existing\n DFA and then perform any normal operations upon that DFA.");
+          }        	
+        });
+        
+        
+        
         
         // Add quick help menu item and action listener
         JMenuItem quickHelp = new JMenuItem("Quick Help");   
