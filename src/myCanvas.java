@@ -423,7 +423,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	public void drawTransition(State from, State to)
 	{
 	
-		Graphics g = _canvas.getGraphics();
+		Graphics g = this.getGraphics();
 		
 		int x1 = -1;
 		int y1 = -1;
