@@ -1,12 +1,15 @@
 package automataCreator;
 
-public class State 
+import java.awt.Graphics;
+
+public class State extends DrawableObject
 {
 	protected Data.StateType _type;
 	protected String _name;
 	protected int _number;
 	protected int _xPosition;
 	protected int _yPosition;
+	protected int _diameter;
 	
 	// Constructors
 	public State()
@@ -16,15 +19,17 @@ public class State
 		_number = -1;
 		_xPosition = -1;
 		_yPosition = -1;
+		_diameter = -1;
 	}
 	
-	public State(Data.StateType type, String name, int number, int xPosition, int yPosition)
+	public State(Data.StateType type, String name, int number, int xPosition, int yPosition, int diameter)
 	{
 		_type = type;
 		_name = name;
 		_number = number;
 		_xPosition = xPosition;
 		_yPosition = yPosition;
+		_diameter = diameter;
 		
 	}
 	
@@ -54,6 +59,11 @@ public class State
 		_yPosition = yPosition;
 	}
 	
+	public void setDiameter(int diameter)
+	{
+		_diameter = diameter;
+	}
+	
 	
 	// Get methods
 	public Data.StateType getType()
@@ -79,6 +89,23 @@ public class State
 	public int getYPosition()
 	{
 		return _yPosition;
+	}
+	
+	public int getDiameter()
+	{
+		return _diameter;
+	}
+	
+	// Inherited methods
+	public void Draw(Graphics g)
+	{
+		g.drawOval(_xPosition, _yPosition, 50, 50);
+		g.drawString("Q1", _xPosition + 19, _yPosition + 29); // center of circle	
+		
+		// Create and send canvas event
+		CanvasEvent event = new CanvasEvent(this); 
+		CanvasEvents.sendCanvasEvent(event);
+		
 	}
 
 }
