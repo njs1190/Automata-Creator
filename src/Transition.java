@@ -1,5 +1,8 @@
 package automataCreator;
-public class Transition
+
+import java.awt.Graphics;
+
+public class Transition extends DrawableObject
 {
 	protected State _to;
 	protected State _from;
@@ -50,6 +53,12 @@ public class Transition
 	public Data.Symbol getSymbol()
 	{
 		return _symbol;
+	}
+	
+	// Inherited Methods
+	public void Draw(Graphics g)
+	{
+		
 	}
 	
 }
