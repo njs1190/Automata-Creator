@@ -1,3 +1,8 @@
+// Author: Jidaeno
+// Class: MainFrame.java
+// Purpose: Responsible for setting up the user interface and also implementing
+// the save and open methods 
+
 package automataCreator;
 
 // Java classes
