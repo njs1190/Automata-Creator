@@ -1,29 +1,38 @@
 package automataCreator;
 
-class Helper 
-{
-	
-	private static String _publicDirectory;
-	private static String _os;
-	
+public class Helper 
+{	
 	public Helper()
 	{
-		_publicDirectory = System.getProperty("PUBLIC");
-		_os = System.getProperty("os.name");
 	}
 	
 	// PRE:
 	// POST: Returns the public directory as determined by the system
-	public static String GetPublicDirectory()
+	public static String getPublicDirectory()
 	{
-		return _publicDirectory;
+		String os = getOS();
+		if (os.contains("Mac OS"))
+		{
+			return System.getProperty("user.home") + "/Desktop/";
+		}
+		
+		else if (os.contains("Windows"))
+		{
+			return "";
+		}
+		
+		else
+		{
+			return null;
+		}
+				
 	}
 	
 	// PRE:
 	// POST: Returns the operating system as determined by the system
-	public static String GetOS()
+	public static String getOS()
 	{
-		return _os;
+		return System.getProperty("os.name");
 	}
 
 }
