@@ -1,3 +1,8 @@
+// Author: Jidaeno
+// Class: Helper.java
+// Purpose: Responsible for obtaining the desktop directory depending on 
+// the operating system of the computer executing Automata Creator
+
 package automataCreator;
 
 public class Helper 
