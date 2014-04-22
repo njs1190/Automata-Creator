@@ -1,3 +1,11 @@
+// Author: Jidaeno
+// Class: SimBar.java
+// Purpose: Creates the simulation bar that is added to the top of the main window.
+// The simulation bar contains the previous and next symbol button, the start and stop
+// simulation buttons as well as a spinner that will allow the user to decide
+// for how many seconds they would like the simulation to pause on each symbol during
+// simulation
+
 package automataCreator;
 
 import java.awt.BorderLayout;
