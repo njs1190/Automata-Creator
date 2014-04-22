@@ -1,3 +1,10 @@
+// Author: Jidaeno
+// Class: Validator.java
+// Purpose: Responsible for going through the states, transitions and string
+// and making sure that there is only one start state, at least one final state,
+// each transition has at least one symbol, and that the string contains only
+// letters from the binary alphabet {0, 1}
+
 package automataCreator;
 
 import java.util.ArrayList;
