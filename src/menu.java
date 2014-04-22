@@ -1,20 +1,25 @@
 package automataCreator;
 
 import java.awt.event.*;
+import java.util.EventListener;
+import java.util.EventObject;
 
 import javax.swing.*;
+import javax.swing.event.EventListenerList;
+
 
 public class menu 
 {	
-	MainFrame _mainFrame;
-	private JOptionPane aboutBox;
+	private MainFrame _mainFrame;
+	private StringInput _input;
+	private JOptionPane _aboutBox;
 
 	public menu(MainFrame mainFrame)
 	{
 		_mainFrame = mainFrame;
 	}
 
-	public JMenuBar createMenuBar()
+	public JMenuBar initializeMenuBar()
     {
         //Create the menu bar.
         JMenuBar menuBar = new JMenuBar();
@@ -51,7 +56,7 @@ public class menu
         {
           public void actionPerformed(ActionEvent e) 
           {
-        	  _mainFrame.Save();
+        	  _mainFrame.save();
           }
         	
         });
@@ -66,7 +71,7 @@ public class menu
         {
           public void actionPerformed(ActionEvent e) 
           {
-        	  _mainFrame.OpenExisting();
+        	  _mainFrame.openExisting();
           }
         	
         });
@@ -77,7 +82,7 @@ public class menu
         {
           public void actionPerformed(ActionEvent e) 
           {
-        	  _mainFrame.Close();
+        	  _mainFrame.close();
           }
         	
         });
@@ -107,24 +112,27 @@ public class menu
         ImageIcon redoIcon = new ImageIcon("Images/redo.png");            
         redo.setIcon(redoIcon);
         
-        // Add delete edit menu item and action listener
-        JMenuItem deleteState = new JMenuItem("Delete State");
-        ImageIcon deleteIcon = new ImageIcon("Images/delete.png");             
-        deleteState.setIcon(deleteIcon);
-        
         // Add copy edit menu item and action listener
         JMenuItem copyCanvas = new JMenuItem("Copy Canvas");
         
         // Add clear edit menu item and action listener
         JMenuItem clearCanvas = new JMenuItem("Clear Canvas");
+        clearCanvas.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	  ClearCanvasEvent event = new ClearCanvasEvent(this);
+        	  ClearCanvasEvents.sendClearCanvasEvent(event);  	          	  
+          }
+          
+        });
         
         // Add all created sub menu items to edit menu
         edit.add(undo);
         edit.add(redo);
         edit.addSeparator();
-        edit.add(deleteState);
-        edit.addSeparator();
         edit.add(copyCanvas);
+        edit.addSeparator();
         edit.add(clearCanvas); 
         
         // End build Edit menu
@@ -141,9 +149,11 @@ public class menu
         start.addActionListener(new ActionListener()
         {
           public void actionPerformed(ActionEvent e) 
-          {
-        	  _mainFrame.createState(1);
-          }        	
+          {       	  
+        	  StateEvent event = new StateEvent(this, Data.StateType.START);
+        	  StateEvents.sendStateEvent(event);
+          }   
+          
         });
         
         // Add start/accept state sub menu item and action listener 
@@ -152,7 +162,8 @@ public class menu
         {
           public void actionPerformed(ActionEvent e) 
           {
-        	  _mainFrame.createState(2);
+        	  StateEvent event = new StateEvent(this, Data.StateType.STARTACCEPT); 
+        	  StateEvents.sendStateEvent(event);
           }        	
         });
         
@@ -162,8 +173,10 @@ public class menu
         {
           public void actionPerformed(ActionEvent e) 
           {
-        	  _mainFrame.createState(3);
-          }        	
+        	 StateEvent event = new StateEvent(this, Data.StateType.INTERMEDIATE);  
+        	 StateEvents.sendStateEvent(event);
+          }
+          
         });
         
         // Add accept state sub menu item and action listener 
@@ -172,7 +185,8 @@ public class menu
         {
           public void actionPerformed(ActionEvent e) 
           {
-        	  _mainFrame.createState(4);
+        	  StateEvent event = new StateEvent(this, Data.StateType.ACCEPT);  
+        	  StateEvents.sendStateEvent(event);
           }        	
         });
         
@@ -181,6 +195,15 @@ public class menu
         
         // Add string insert menu item and action listener
         JMenuItem string = new JMenuItem("String");
+        string.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	  _input = new StringInput();
+        	  _input.create();  	          	  
+          }
+          
+        });
         
         // Add all created sub menu items to insert menu
         insert.add(state);
@@ -207,12 +230,17 @@ public class menu
           {
         	  
         	  
-        	  JOptionPane.showMessageDialog(aboutBox, "The Automata Creator is a standalone desktop application that can be \n installed across multiple platforms such as Windows and Linux.\n The Automata Creator will allow both educators and students to create, edit, simulate, and store a \n DFA. Additionally, the application will allow users to import an existing\n DFA and then perform any normal operations upon that DFA.");
+        	  JOptionPane.showMessageDialog(
+        			  
+        			  
+        		_aboutBox, "The Automata Creator is a standalone desktop application that can be \n "
+        				 +"installed across multiple platforms such as Windows and Linux.The \n"
+        				 +"Automata Creator will allow both educators and students to create, edit,\n"
+        				 +"simulate, and store a DFA. Additionally, the application will allow users\n "
+        				 +"to import an existing DFA and then perform any normal operations upon that\n "
+        				 + "DFA.");
           }        	
         });
-        
-        
-        
         
         // Add quick help menu item and action listener
         JMenuItem quickHelp = new JMenuItem("Quick Help");   
@@ -227,5 +255,141 @@ public class menu
        
         return menuBar;      
     }
-
 }
+
+// MENU EVENT CLASSES
+
+// State clicked event
+@SuppressWarnings("serial")
+class StateEvent extends EventObject
+{
+	private Data.StateType _type;
+	
+	public StateEvent(Object source, Data.StateType type)
+	{
+		super(source);
+		_type = type;
+	}
+	
+	public Data.StateType getType()
+	{
+		return _type;
+	}
+}
+
+interface StateEventListener extends EventListener
+{
+	public void stateSelected(StateEvent e);
+}
+
+class StateEvents
+{
+    static EventListenerList listenerList = new EventListenerList();
+	
+    static void addStateEventListener(StateEventListener l)
+	{
+		listenerList.add(StateEventListener.class, l);
+	}
+	
+	static void removeStateEventListener(StateEventListener l)
+	{
+		listenerList.remove(StateEventListener.class, l);
+	}
+	
+	static void sendStateEvent(StateEvent e)
+	{
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = 0; i < listeners.length; i++)
+		{
+			if (listeners[i] == StateEventListener.class)
+			{
+				((StateEventListener) listeners[i+1]).stateSelected(e);
+			}
+		}
+	}
+}
+
+// Clear canvas clicked event 
+@SuppressWarnings("serial")
+class ClearCanvasEvent extends EventObject
+{
+	public ClearCanvasEvent(Object source)
+	{
+		super(source);
+	}
+}
+
+interface ClearCanvasEventListener extends EventListener
+{
+	public void clearCanvasSelected(ClearCanvasEvent e);
+}
+
+class ClearCanvasEvents
+{
+    static EventListenerList listenerList = new EventListenerList();
+	
+    static void addClearCanvasEventListener(ClearCanvasEventListener l)
+	{
+		listenerList.add(ClearCanvasEventListener.class, l);
+	}
+	
+	static void removeClearCanvasEventListener(ClearCanvasEventListener l)
+	{
+		listenerList.remove(ClearCanvasEventListener.class, l);
+	}
+	
+	static void sendClearCanvasEvent(ClearCanvasEvent e)
+	{
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = 0; i < listeners.length; i++)
+		{
+			if (listeners[i] == ClearCanvasEventListener.class)
+			{
+				((ClearCanvasEventListener) listeners[i+1]).clearCanvasSelected(e);
+			}
+		}
+	}
+}
+
+// Copy canvas clicked event 
+@SuppressWarnings("serial")
+class CopyCanvasEvent extends EventObject
+{
+	public CopyCanvasEvent(Object source)
+	{
+		super(source);
+	}
+}
+
+interface CopyCanvasEventListener extends EventListener
+{
+	public void copyCanvasSelected(CopyCanvasEvent e);
+}
+
+class CopyCanvasEvents
+{
+ static EventListenerList listenerList = new EventListenerList();
+	
+ static void addCopyCanvasEventListener(CopyCanvasEventListener l)
+	{
+		listenerList.add(CopyCanvasEventListener.class, l);
+	}
+	
+	static void removeCopyCanvasEventListener(CopyCanvasEventListener l)
+	{
+		listenerList.remove(CopyCanvasEventListener.class, l);
+	}
+	
+	static void sendCopyCanvasEvent(CopyCanvasEvent e)
+	{
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = 0; i < listeners.length; i++)
+		{
+			if (listeners[i] == CopyCanvasEventListener.class)
+			{
+				((CopyCanvasEventListener) listeners[i+1]).copyCanvasSelected(e);
+			}
+		}
+	}
+}
+
