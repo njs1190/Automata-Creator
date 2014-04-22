@@ -422,7 +422,8 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	// POST: A transition will be drawn between the selected states
 	public void drawTransition(State from, State to)
 	{
-		Graphics g = this.getGraphics();
+	
+		Graphics g = _canvas.getGraphics();
 		
 		int x1 = -1;
 		int y1 = -1;
@@ -439,10 +440,18 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			
 			g.drawLine(x1, y1, x2, y2);
 			
+			g.drawOval(200, 100, 50, 50);
+			g.drawOval(300, 300, 50, 50);
+			
+			
+			
+		
+			drawArrowHead(g, to , from, Color.BLACK ); 		
 		}
 		
 		else
 		{
+			
 			y1 = from.getYPosition();					
 			y2 = to.getYPosition() + 50;			
 			
@@ -450,6 +459,19 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			x2 = to.getXPosition() + 25;
 			
 			g.drawLine(x1, y1, x2, y2);
+			
+			
+			
+			g.drawOval(200, 100, 50, 50);
+			g.drawOval(300, 300, 50, 50);
+			
+			
+			
+		
+			drawArrowHead(g, from , to, Color.BLACK ); 
+		
+		
+		
 		}
 		
 		// Create and send canvas event
@@ -466,7 +488,43 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 		CanvasEvent event = new CanvasEvent(this); 
 		CanvasEvents.sendCanvasEvent(event);
 	}
+		
+		// PRE: A Transition Is drawn between two states 
+		// POST: An Arrow is added to the end of the transition line
+	private void drawArrowHead(Graphics g, State from, State to, Color color)  
+    {  
 	
+		
+		int y1 = from.getYPosition();					
+		int	y2 = to.getYPosition() + 50;			
+		
+		int	x1 = from.getXPosition() + 25;
+		int	x2 = to.getXPosition() + 25;
+		
+		Point toState = new Point(x1,y1);
+		Point fromState = new Point (x2,y2);
+		
+        int arrowLength = 30;
+        double  radius = Math.toRadians(25);
+        
+        double dy = toState.y - fromState.y;  
+        double dx = toState.x - fromState.x;  
+        
+        double theta = Math.atan2(dy, dx);  
+        double x, y, rho = theta + radius;  
+        
+        
+        for(int j = 0; j < 2; j++)  
+        {  
+        	x =  toState.x - arrowLength * Math.cos(rho);  
+            y =  toState.y - arrowLength * Math.sin(rho);  
+            g.setColor(color);
+            
+            g.drawLine((int)x,(int) y, toState.x,toState.y);  
+            
+            rho = theta - radius;  
+        }  
+    }
 	// PRE: Given an x and y point on canvas
 	// POST: Determines if the point is a state and returns that state
 	public State isState(int x, int y)
