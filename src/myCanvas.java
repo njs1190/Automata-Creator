@@ -4,155 +4,188 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.event.EventListenerList;
 
 import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.EventObject;
    
 public class myCanvas extends JPanel implements MouseListener, MouseMotionListener
 {
-    private ArrayList<State> _states; // The list of states that have been added to the canvas
-    private ArrayList<Transition> _transitions; // The list of transitions that have been added to the canvas
-    private JPanel canvas;
-    private JPanel stateObjectPanel;
-    private JPopupMenu contextMenu; 			  // Context menu used for the canvas when right clicking
-    private int stateInserts = 0;			      // This is the number of states on the canvas
+    private ArrayList<DrawableObject> _drawableObjects;
+    private int _states = 0;			      // This is the number of states on the canvas
     private static final int X_BORDER = 73;       // This is the x location where the canvas is able to be drawn on
     private static final int Y_BORDER = 26; 	  // This is the y location where the canvas is able to be drawn on
     private static final int STATE_DIAMETER = 50; // This is the diameter for the state object 
     private int _dragFromX = 0;   				  // pressed this far inside ball's
     private int _dragFromY = 0;    				  // bounding box.
-    private int _stateX = 50;      				  // x coord - set from drag
-    private int _stateY = 50;      				  // y coord - set from drag
+    private int _stateX = 50;      				  // x coordinate - set from drag
+    private int _stateY = 50;      				  // y coordinate - set from drag
     private State _currentState;				  // Current state being selected
-
     private boolean _canDrag  = false;
+    
+    // State object panel items
+    JPanel _stateObjectPanel;
+    JButton _start; 	
+	JButton _startA;
+	JButton _intermediate;
+	JButton _accept;
+    
+    // Context menu items
+    private JPopupMenu _contextMenu; 
+    private JMenu _insert;
+    private JMenu _to;
+    private JMenuItem _clearCanvas;
+    private JMenuItem _copyCanvas;
+    private JMenuItem _deleteState;
     
     // PRE: myCanvas object is instantiated with no parameters
     // POST: myCanvas object is initialized
     public myCanvas()
-    {    	
-    	_states = new ArrayList<State>();
-    	_transitions = new ArrayList<Transition>(); 
-    	setBackground(Color.white);
-        setForeground(Color.black);
+    {  
+    	_drawableObjects = new ArrayList<DrawableObject>();
     	
     }
     
     // PRE: myCanvas object is instantiated with parameters
     // POST: myCanvas object is initialized
-    public myCanvas(ArrayList<State> states, ArrayList<Transition> transitions)
+    public myCanvas(ArrayList<DrawableObject> objects)
     {
-    	_states = states;
-    	_transitions = transitions;
-    	setBackground(Color.white);
-        setForeground(Color.black);
+    	_drawableObjects = objects; 
     }
     
     // Set methods
-    public void setStates(ArrayList<State> states)
+    public void setDrawableObjects(ArrayList<DrawableObject> objects)
     {
-    	_states = states;
-    }
-    
-    public void setTransitions(ArrayList<Transition> transitions)
-    {
-    	_transitions = transitions;
+    	_drawableObjects = objects;
     }
     
     // Get methods
-    public ArrayList<State> getStates()
+    public ArrayList<DrawableObject> getDrawableObjects()
     {
-    	return _states;
-    }
-    
-    public ArrayList<Transition> getTransitions()
-    {
-    	return _transitions;
-    	
+    	return _drawableObjects;
     }
 
-    // PRE: AddCanvas is called from mainframe
+    // PRE: AddCanvas is called from constructor
     // POST: myCanvas JFrame is initialized
-     public void AddCanvas(JPanel canvasPanel)
-    {   
-    	//Create panel for 4 states on left side
-        stateObjectPanel = new JPanel(new GridLayout(4,1));
+    public void initializeCanvas()
+    {   	
+    	this.setBackground(Color.WHITE);
+    	this.setLayout(new BorderLayout());
     	
-    	//Creates 4 buttons for the state panel
-        JLabel start = new JLabel("Start");    	
-    	JLabel startA = new JLabel("Start Accept");
-    	JLabel intermediate = new JLabel("Intermediate");
-    	JLabel accept = new JLabel("Accept");
+    	// Create panel for 4 states on left side
+        _stateObjectPanel = new JPanel(new GridLayout(4,1));
     	
-    	stateObjectPanel.add(start);
-    	stateObjectPanel.add(startA);
-    	stateObjectPanel.add(intermediate);
-    	stateObjectPanel.add(accept);
+    	// Creates 4 buttons for the state panel
+        _start = new JButton();
+        // Start State icon
+        ImageIcon startIcon = new ImageIcon("Images/start.gif");
+        _start.setIcon(startIcon);
+        _start.setFocusable(false); // Turn off highlighting after user click
+        _start.addActionListener(new ActionListener()
+        {
 
-        /*JButton startButton = new JButton("Start");
-    	JButton startAcceptButton = new JButton("Start Accept");
-    	JButton intermediate = new JButton("Intermediate");
-    	JButton acceptButton = new JButton("Accept");
-    		
-    	//adds action listeners to the buttons
-    	startButton.addActionListener(new ActionListener()
-    	{
-    		public void actionPerformed(ActionEvent e) 
-    		{
-    			
-    			
-    		}
-    	});
-    	startAcceptButton.addActionListener(new ActionListener(){
-    		public void actionPerformed(ActionEvent e) {
-    			//stateEvent(2);
-    			}
-    		});
-    	intermediate.addActionListener(new ActionListener(){
-    		public void actionPerformed(ActionEvent e) {
-    			//stateEvent(3);
-    			}
-    		});
-    	acceptButton.addActionListener(new ActionListener(){
-    		public void actionPerformed(ActionEvent e) {
-    			//stateEvent(4);
-    			}
-    		});
-    	
-    	//adds the buttons to the state panel
-    	stateObjectPanel.add(startButton);
-    	stateObjectPanel.add(startAcceptButton);
-    	stateObjectPanel.add(intermediate);
-    	stateObjectPanel.add(acceptButton); */	
-    	  	
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				DrawableObject s = new State(Data.StateType.START, "q0", 0, 200 - 25, 200 - 25, STATE_DIAMETER);
+				_drawableObjects.add(s);
+				repaint();
+			}
         	
-    	//adds the state panel to the left side
-    	canvasPanel.add(stateObjectPanel, BorderLayout.WEST);
+        });
+        
+    	_startA = new JButton();
+    	// Start accept Icon
+        ImageIcon startAIcon = new ImageIcon("Images/startA.gif");
+        _startA.setIcon(startAIcon);
+        _startA.setFocusable(false); // Turn off highlighting after user click
+        
+    	_intermediate = new JButton();
+    	// Intermediate state Icon
+        ImageIcon intermediateIcon = new ImageIcon("Images/intermediate.gif");
+        _intermediate.setIcon(intermediateIcon);
+        _intermediate.setFocusable(false); // Turn off highlighting after user click
+    	
+    	_accept = new JButton();
+    	// Accept Icon
+        ImageIcon acceptIcon = new ImageIcon("Images/accept.gif");
+        _accept.setIcon(acceptIcon);
+        _accept.setFocusable(false); // Turn off highlighting after user click
+    	
+    	_stateObjectPanel.add(_start);
+    	_stateObjectPanel.add(_startA);
+    	_stateObjectPanel.add(_intermediate);
+    	_stateObjectPanel.add(_accept);
+	
+    	// Adds the state panel to the left side
+    	this.add(_stateObjectPanel, BorderLayout.WEST);
 		
-		canvasPanel.addMouseListener(this); 
-        canvasPanel.addMouseMotionListener(this);
+    	// Add mouse listeners
+    	this.addMouseListener(this); 
+    	this.addMouseMotionListener(this);
         
-        canvas = canvasPanel;      
+        // Add listeners to listen for events generated
+        // by the main menu bar, or simulation bar
+        addPublicEvents(); 
         
-    }  
-      
+        // Create right-click context menu
+        createContextMenu();
+
+    }
+     
+     // PRE:
+     // POST: This class will now listen for events
+     // generated by items other than those created
+     // in this class
+     public void addPublicEvents()
+     {
+    	// Listen for events generated by the insert > state menu items
+     	StateEvents.addStateEventListener(new StateEventListener()
+     	{
+     		public void stateSelected(StateEvent e)
+     		{
+     			if (e.getType() == Data.StateType.START)
+     			{
+     				createStates(1);
+     			}
+     			
+     			else if (e.getType() == Data.StateType.STARTACCEPT)
+     			{
+     				createStates(2);
+     			}
+     			
+     			else if (e.getType() == Data.StateType.INTERMEDIATE)
+     			{
+     				createStates(3);
+     			}
+     			
+     			else if (e.getType() == Data.StateType.ACCEPT)
+     			{
+     				createStates(4);
+     			}
+     		}
+     	}); 
+     	
+     	// Listen for events generated by the edit > clear canvas menu item
+     	ClearCanvasEvents.addClearCanvasEventListener(new ClearCanvasEventListener()
+     	{
+     		public void clearCanvasSelected(ClearCanvasEvent e)
+     		{
+     			clearCanvas();
+     		}     	
+     	});
+     }
+     
     // PRE: One of the state insert options chosen from menu
     // POST: Creates the appropriate state in predetermined areas
     public void createStates(int stateChoice)
     {   	
-    	Graphics g = canvas.getGraphics();
-    	
     	switch(stateChoice)
     	{
-    		case 1: 
-    			g.drawOval((125 + stateInserts*100), 50, 50, 50);
-    			g.drawString("Q" + stateInserts, 50, 50);
-    			stateInserts++;
+    		case 1:     			
     			break;			
     		case 2: 
-    			g.drawOval((125 + stateInserts*100), 50, 50, 50);
-    			g.drawOval((125 + stateInserts*100), 50, 53, 53);
-    			g.drawString("Q" + stateInserts, 50, 50);
-    			stateInserts++;
     			break;
     		case 3:
     			break;
@@ -171,7 +204,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	public void mousePressed(MouseEvent e) 
 	{
 		//checks to see if it is the left click
-		if(SwingUtilities.isLeftMouseButton(e))
+		/*if(SwingUtilities.isLeftMouseButton(e))
 		{
 			// gets the source of button click  1 = left click, 3 = right click
 			int xInitial = e.getX();  // x-position of mouse
@@ -189,10 +222,12 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			else
 			{
 				_canDrag = true;
-				DrawState(xInitial - 25, yInitial - 25);
-				State s = new State(Data.StateType.STARTFINAL, "q0", 0, xInitial - 25, yInitial - 25, STATE_DIAMETER);
-				_states.add(s);
-				_currentState = s;
+				drawState(xInitial - 25, yInitial - 25);
+				DrawableObject s = new State(Data.StateType.START, "q0", 0, xInitial - 25, yInitial - 25, STATE_DIAMETER);
+				_drawableObjects.add(s);
+				//_states.add(s);
+				
+				//_currentState = s;
 			}
 		}
 		
@@ -200,7 +235,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 		{
 			_canDrag = false;
 		}
-			
+			*/
 	}
 	
 	// PRE: Mouse s dragged
@@ -218,9 +253,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			_stateY = yInitial - _dragFromY;			
 			
 			_currentState.setXPosition(x);
-            _currentState.setYPosition(y);
-            DrawState(x, y);
-            RepaintCanvas();    
+            _currentState.setYPosition(y);  
 		}
 		
 	}	
@@ -242,13 +275,12 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			
 			if (!(xInitial > X_BORDER))
 			{
-				_states.remove(_currentState);
-				stateObjectPanel.repaint();
+				//_states.remove(_currentState);
+				_stateObjectPanel.repaint();
 			}
 			
 			else
 			{
-				 DrawState(x, y);
 	            _currentState.setXPosition(x);
 	            _currentState.setYPosition(y);           
 			}
@@ -275,153 +307,167 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 		// check if the mouse click event is generated
 		// from a right click
 		if (e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e) &&
-				(e.getX() > X_BORDER && e.getX() < canvas.getWidth()) &&
-				e.getY() > Y_BORDER && e.getY() < canvas.getHeight())
+				(e.getX() > X_BORDER && e.getX() < this.getWidth()) &&
+				e.getY() > Y_BORDER && e.getY() < this.getHeight())
 		{	
-		    // Create the context menu if it is null
-			if (contextMenu == null)
+			
+			final State state = isState(e.getX(), e.getY());
+			if (state != null)
 			{
-				contextMenu = new JPopupMenu();	
+				_insert.setEnabled(true);
+				addToStatesToContextMenu(state);	
+				_deleteState.setEnabled(true);
+				_deleteState.addActionListener(new ActionListener()
+			    {
+				      public void actionPerformed(ActionEvent e) 
+				      {
+				    	 deleteState(state); 
+				    	 _contextMenu.setVisible(false);
+				      }
+				        	
+				});			
 			}
 			
 			else
 			{
-				// Clear all of the components from the menu item
-				// so that menu options may be recreated
-				for (Component c : contextMenu.getComponents())
-				{
-					contextMenu.remove(c);
-				}
-			}			
+				_insert.setEnabled(false);
+				_deleteState.setEnabled(false);
+			}
 			
-			contextMenu = CreateMenu(e.getX(), e.getY());			
+			_copyCanvas.addActionListener(new ActionListener()
+		    {
+			      public void actionPerformed(ActionEvent e) 
+			      {
+			    	 copyCanvas(); 
+			    	 _contextMenu.setVisible(false);
+			      }
+			        	
+			});
+			
+			_clearCanvas.addActionListener(new ActionListener()
+		    {
+			      public void actionPerformed(ActionEvent e) 
+			      {
+			    	 clearCanvas(); 
+			    	 _contextMenu.setVisible(false);
+			      }
+			        	
+			});
+			
 			
 			// Lastly, make the context menu visible
-			contextMenu.setLocation(e.getLocationOnScreen());
-			contextMenu.setVisible(true);
-			
+			this.setComponentPopupMenu(_contextMenu);
+			_contextMenu.setLocation(e.getLocationOnScreen());
+			_contextMenu.setVisible(true);
+		
 		}
 		
-		else if (contextMenu != null && contextMenu.isVisible())
+		else if (_contextMenu != null && _contextMenu.isVisible())
 		{
-			contextMenu.setVisible(false);
+			_contextMenu.setVisible(false);
 		}
-	}	
+	}
 	
-	// PRE: The user has right-clicked on the canvas
-	// POST: The correct pop up menu is returned 
-	public JPopupMenu CreateMenu(int x, int y)
+	public void addToStatesToContextMenu(State from)
 	{
-		JMenu insert = new JMenu("Insert");			
-		JMenuItem deleteState = new JMenuItem("Delete");
-		ImageIcon deleteIcon = new ImageIcon("Images/delete.png");
-		deleteState.setIcon(deleteIcon);
-		
-		JMenuItem copyCanvas = new JMenuItem("Copy Canvas");
-		copyCanvas.addActionListener(new ActionListener()
-	    {
-		      public void actionPerformed(ActionEvent e) 
-		      {
-		    	 CopyCanvas(); 
-		    	 contextMenu.setVisible(false);
-		      }
-		        	
-		});
-		
-		JMenuItem clearCanvas = new JMenuItem("Clear Canvas");
-		clearCanvas.addActionListener(new ActionListener()
-	    {
-		      public void actionPerformed(ActionEvent e) 
-		      {
-		    	ClearCanvas(); 
-		    	contextMenu.setVisible(false);
-		      }
-		        	
-		});
-		
-		final State state = isState(x, y);
-		if (state != null)
+		// Remove all of the old to menu items 
+		// since the menu could possible change
+		// each time the context menu is loaded
+		for (Component item : _to.getMenuComponents())
 		{
-			// For every state on the canvas add the option to
-			// add a transition to that state, including the selected state
-			JMenu to = new JMenu("Transition to...");	
-			for (State s : _states)
+			_to.remove(item);
+		}
+		
+		// For every state on the canvas add the option to
+		// add a transition to that state, including the selected state	
+		for (DrawableObject obj : _drawableObjects)
+		{
+			if (obj instanceof State)
 			{
-				final State toState = s;
-				JMenuItem states = new JMenuItem(toState.getName());
-				to.add(states);
-				states.addActionListener(new ActionListener()
+				final State fromState = from;
+				final State toState = (State)obj;
+				JMenuItem stateItem = new JMenuItem(toState.getName());
+				_to.add(stateItem);
+				stateItem.addActionListener(new ActionListener()
 			    {
 			      public void actionPerformed(ActionEvent e) 
 			      {
-			    	  DrawTransition(state, toState);
-			    	  contextMenu.setVisible(false);
+			    	  // Add event handler at run time
+			    	  drawTransition(fromState, toState);
+			    	  _contextMenu.setVisible(false);
 			      }
 			        	
 			    });
-			}	
-					
-			// Add insert sub menu items to the insert menu
-			insert.add(to);	;	
-			
-			// If the point is on a state, then add the event in the case
-			// that the user chooses the delete state menu option.
-			deleteState.addActionListener(new ActionListener()
-		    {
-			      public void actionPerformed(ActionEvent e) 
-			      {			    	  
-			    	 DeleteState(state); 
-			    	 contextMenu.setVisible(false);
-			      }
-			        	
-			});	
-			
-		}
+			}
 		
-		// If the point is not on a state disable the insert and delete state menu
-		// options.
-		else
-		{
-			insert.setEnabled(false);
-			deleteState.setEnabled(false);
 		}
+	}
+		
+	// PRE: The user has right-clicked on the canvas
+	// POST: The context menu is created  
+	public void createContextMenu()
+	{
+		_contextMenu = new JPopupMenu();
+		
+		_insert = new JMenu("Insert");	
+		
+		_to = new JMenu("Transition to...");
+		// Add insert sub menu items to the insert menu
+		_insert.add(_to);
+		
+		_copyCanvas = new JMenuItem("Copy Canvas");		
+		
+		_clearCanvas = new JMenuItem("Clear Canvas");
+
+		_deleteState = new JMenuItem("Delete");
+		ImageIcon _deleteIcon = new ImageIcon("Images/delete.png");
+		_deleteState.setIcon(_deleteIcon);
 		
 		// Add all sub menu items to the context menu
-		contextMenu.add(insert);
-		contextMenu.addSeparator();
-		contextMenu.add(deleteState);
-		contextMenu.addSeparator();				
-		contextMenu.add(copyCanvas);
-		contextMenu.addSeparator();
-		contextMenu.add(clearCanvas);
-		
-		return contextMenu;		
+		_contextMenu.add(_insert);
+		_contextMenu.addSeparator();
+		_contextMenu.add(_deleteState);
+		_contextMenu.addSeparator();				
+		_contextMenu.add(_copyCanvas);
+		_contextMenu.addSeparator();
+		_contextMenu.add(_clearCanvas);
+			
 	}
 	
 	// PRE:
 	// POST: A state will be drawn onto the canvas
-	public void DrawState(int x, int y)
+	public void AddState(int x, int y)
 	{
-		Graphics g = canvas.getGraphics();		
-		g.drawOval(x, y, 50, 50);
-		g.drawString("Q1", x + 19, y + 29);	// center of circle		
+		DrawableObject obj = new State();
+		_drawableObjects.add(obj);
+		_states++;
+		
+		repaint();
+		
+		// Create and send canvas event
+		CanvasEvent event = new CanvasEvent(this); 
+		CanvasEvents.sendCanvasEvent(event);		
 	}
 	
 	// PRE: A valid state has been selected to delete
 	// POST: The state will be removed from the list of states and 
 	// will be removed from the canvas 
-	public void DeleteState(State state)	
+	public void deleteState(State state)	
 	{
 		// Remove the state from list of all states on canvas
-		_states.remove(state);		
-		RepaintCanvas();
+		_drawableObjects.remove(state);
+		repaint();
+		
+		// Create and send canvas event
+		CanvasEvent event = new CanvasEvent(this); 
+		CanvasEvents.sendCanvasEvent(event);		
 	}
 	
 	// PRE: Both a from and to state have been selected 
 	// POST: A transition will be drawn between the selected states
-	public void DrawTransition(State from, State to)
+	public void drawTransition(State from, State to)
 	{
-		Graphics g = canvas.getGraphics();
+		Graphics g = this.getGraphics();
 		
 		int x1 = -1;
 		int y1 = -1;
@@ -451,6 +497,19 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			g.drawLine(x1, y1, x2, y2);
 		}
 		
+		// Create and send canvas event
+		CanvasEvent event = new CanvasEvent(this); 
+		CanvasEvents.sendCanvasEvent(event);		
+	}
+	
+	// PRE: A transition is selected to be deleted
+	// POST: The selected transition is deleted from the canvas
+	// along with its labeled symbol
+	public void deleteTransition()
+	{
+		// Create and send canvas event
+		CanvasEvent event = new CanvasEvent(this); 
+		CanvasEvents.sendCanvasEvent(event);
 	}
 	
 	// PRE: Given an x and y point on canvas
@@ -459,12 +518,16 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	{
 		State state = null;
 		
-		for (State s : _states)
+		for (DrawableObject obj : _drawableObjects)
 		{
-			if ((x >= s.getXPosition() && x <= s.getXPosition() + s.getDiameter())
-					&& y >= s.getYPosition() && y <= s.getYPosition() + s.getDiameter())
-			{
-				state = s;
+			if (obj instanceof State)
+			{	
+				State s = (State) obj;				
+				if ((x >= s.getXPosition() && x <= s.getXPosition() + s.getDiameter())
+						&& y >= s.getYPosition() && y <= s.getYPosition() + s.getDiameter())
+				{
+					state = s;
+				}
 			}
 		}
 		
@@ -473,7 +536,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	
 	// PRE: The copy canvas menu option has been chosen
 	// POST: The image of the canvas is saved to the clip board
-	public void CopyCanvas()
+	public void copyCanvas()
 	{
 		
 		
@@ -481,141 +544,75 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	
 	// PRE: The clear canvas menu option has been chosen
 	// POST: All states and transitions are cleared from the canvas
-	public void ClearCanvas()
+	public void clearCanvas()
 	{	
-		if (_states != null)
-		{
-			_states.clear();
-		}
+		_drawableObjects.clear();
+		repaint();
 		
-		if (_transitions != null)
-		{
-			_transitions.clear();
-		}
-
-		// Repaint the area of the canvas just where states and transitions can be drawn
-		canvas.repaint(X_BORDER, Y_BORDER, canvas.getWidth(), canvas.getHeight());
+		// Create and send canvas event
+		CanvasEvent event = new CanvasEvent(this); 
+    	CanvasEvents.sendCanvasEvent(event);
 	}
 	
 	// PRE: Repaint canvas has been called by another method
 	// POST: All existing states and transitions will be repainted onto the canvas
-	public void RepaintCanvas()
+	@Override
+	public void paintComponent(Graphics g) 
 	{
-		//canvas.repaint(X_BORDER, Y_BORDER, canvas.getWidth(), canvas.getHeight());
-		canvas.repaint();
-		
-		// Go through all of the states and re-add them to the canvas
-		for (State s : _states)
+        super.paintComponent(g);       
+
+		//Loop thru a list of drawable objects
+		for (DrawableObject d : _drawableObjects)
 		{
-			DrawState(s.getXPosition(), s.getYPosition());					
+			d.Draw(g);
 		}
-		
-		// Go through all of the transitions and re-add them onto the canvas
-		for (Transition t : _transitions)
-		{
-			DrawTransition(t.getFrom(), t.getTo());			
-		}
+
 	}
+}
 
-// PRE: a valid DFA has been created and a string has been entered for simulation
-	// POST: displays Relevant transition graphic
-	public void simTransition(State from, State to, boolean symbolMatch, int displayLength )
-	{	
-
-
-		
-		Graphics g = canvas.getGraphics();
-		Graphics2D g2 = (Graphics2D) g;
-		int x1 = -1;
-		int y1 = -1;
-		int x2 = -1;
-		int y2 = -1; 
-		
-	if (symbolMatch = true )
+// CANVAS CHANGED EVENT
+// This event will be fired when the canvas is modified
+// during adding or deleting a state, adding or deleting 
+// a transition, clearing the canvas
+@SuppressWarnings("serial")
+class CanvasEvent extends EventObject
+{
+	public CanvasEvent(Object source)
 	{
-	
-		 
-		if (from.getYPosition() < to.getYPosition())
-		{			
-			y1 = from.getYPosition() + 50;					
-			y2 = to.getYPosition();			
-
-			x1 = from.getXPosition() + 25;
-			x2 = to.getXPosition() + 25;
-
-			
-			
-			
-			
-			g2.setStroke(new BasicStroke(5));
-			g2.setColor(Color.YELLOW);
-			g2.draw(new Line2D.Float(x1, y1, x2, y2));
-			
-			
-			
-
-		}
-
-		else
-		{
-			y1 = from.getYPosition();					
-			y2 = to.getYPosition() + 50;			
-
-			x1 = from.getXPosition() + 25;
-			x2 = to.getXPosition() + 25;
-
-			
-			g2.setStroke(new BasicStroke(5));
-			g2.setColor(Color.red);
-			g2.draw(new Line2D.Float(x1, y1, x2, y2));
-		}
-
-	}	
-	else if(symbolMatch = false)
-	{
-		if (from.getYPosition() < to.getYPosition())
-		{			
-			y1 = from.getYPosition() + 50;					
-			y2 = to.getYPosition();			
-
-			x1 = from.getXPosition() + 25;
-			x2 = to.getXPosition() + 25;
-
-			
-			
-			
-			
-			g2.setStroke(new BasicStroke(5));
-			g2.setColor(Color.red);
-			g2.draw(new Line2D.Float(x1, y1, x2, y2));
-			
-			
-			
-
-		}
-
-		else
-		{
-			y1 = from.getYPosition();					
-			y2 = to.getYPosition() + 50;			
-
-			x1 = from.getXPosition() + 25;
-			x2 = to.getXPosition() + 25;
-
-			g2.setStroke(new BasicStroke(5));
-			g2.setColor(Color.red);
-			g2.draw(new Line2D.Float(x1, y1, x2, y2));
-		}
-
-		
-		
-		
-		
-	}
-	
-	
-	
-	
+		super(source);
 	}
 
 }
+
+interface CanvasEventListener extends EventListener
+{
+	public void canvasModified(CanvasEvent e);
+}
+
+class CanvasEvents
+{
+    static EventListenerList listenerList = new EventListenerList();
+	
+    static void addCanvasEventListener(CanvasEventListener l)
+	{
+		listenerList.add(CanvasEventListener.class, l);
+	}
+	
+	static void removeCanvasEventListener(CanvasEventListener l)
+	{
+		listenerList.remove(CanvasEventListener.class, l);
+	}
+	
+	static void sendCanvasEvent(CanvasEvent e)
+	{
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = 0; i < listeners.length; i++)
+		{
+			if (listeners[i] == CanvasEventListener.class)
+			{
+				((CanvasEventListener) listeners[i+1]).canvasModified(e);
+			}
+		}
+	}
+}
+
