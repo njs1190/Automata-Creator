@@ -1,18 +1,11 @@
 package automataCreator;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -20,128 +13,114 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
-public class simBar implements ActionListener 
+public class simBar extends JPanel
 {
+	JPanel _simControl;
+	JButton _previousSymbol;
+	JButton _startStopSymbol;
+	JButton _nextSymbol;
+	SpinnerModel _timeSpinner;
+	JSpinner _spinner;
+	JLabel _timeLabel;
+	JPanel _tapePanel;
+    JLabel _tapeLabel;
+	JTextField _tapeInput;
+	
 	public simBar()
 	{
-
+		
 	}	
-
-	public void BuildSimBar(JPanel simBarPanel) 
+	
+	public void initializeSimBar() 
 	{
-       
- 
-        // Panel for string Simulation control componenets
-        JPanel simControl = new JPanel();
-        simControl.setSize(150, 50);
-
-
-    	//Creates 3 buttons for the state panel
-        JButton previousSymbol = new JButton("<html><center>Previous<br/>Symbol</center></html>");    	
-        JButton startStop = new JButton("<html><center>Start<br/>Simulation</center></html>");
-        JButton nextSymbol = new JButton("<html><center>Next<br/>Symbol</center></html>");
+        _simControl = new JPanel();
+        _simControl.setSize(150, 50);
         
-        
-        
-        //turn off highlighting after user click
-        previousSymbol.setFocusable(false);
-        startStop.setFocusable(false);
-        nextSymbol.setFocusable(false);
-        
-        //Add stateIcons to stateObject Jlabels
-    	//back icon
+        //Creates 3 buttons for the state panel
+        _previousSymbol = new JButton("<html><center>Previous<br/>Symbol</center></html>");
+        _previousSymbol.setToolTipText("Go to previous symbol on tape Input");
+        _previousSymbol.setFocusable(false); // Turn off highlighting after user click
         ImageIcon previousSymbolIcon = new ImageIcon("Images/back.png");
-        previousSymbol.setIcon(previousSymbolIcon); 														
+        _previousSymbol.setIcon(previousSymbolIcon);
         
-        simControl.setBorder(BorderFactory.createEmptyBorder(0,110,0,0));
+        _startStopSymbol = new JButton("<html><center>Start<br/>Simulation</center></html>");
+        _startStopSymbol.setToolTipText("Start auto simulation");
+        _startStopSymbol.setFocusable(false); // Turn off highlighting after user click
+        ImageIcon start = new ImageIcon("Images/play.png");
+        ImageIcon stop = new ImageIcon ("Images/pause.png");
+        _startStopSymbol.setIcon(start);
         
-        
-        
-        
-        // playIcon
-        ImageIcon start = new ImageIcon("Images/play.png");						
-        ImageIcon stop = new ImageIcon ("Images/pause.png");   
-        startStop.setIcon(start); 						        
-       
-        // next Icon
+        _nextSymbol = new JButton("<html><center>Next<br/>Symbol</center></html>");
+        _nextSymbol.setToolTipText("Go to next symbol on tape input");
+        _nextSymbol.setFocusable(false); // Turn off highlighting after user click
         ImageIcon nextSymbolIcon = new ImageIcon("Images/next.png");
-        nextSymbol.setIcon(nextSymbolIcon); 
-       
+        _nextSymbol.setIcon(nextSymbolIcon);
         
-        
-        previousSymbol.setToolTipText("Go to previous symbol on tape Input");
-        startStop.setToolTipText("Start auto simulation");
-        nextSymbol.setToolTipText("Go to next symbol on tape input");
-        
+        _simControl.setBorder(BorderFactory.createEmptyBorder(0,110,0,0));
         
         // Field to specify amount of time transition Graphics are displayed during auto-simulation
-        SpinnerModel timeSpinner = new SpinnerNumberModel(1, 1, 10, 1);     
-        JSpinner spinner = new JSpinner(timeSpinner);
-        JLabel timeLabel = new JLabel("<html><center>Display<br/>Time</center></html> ");  
-        timeLabel.setToolTipText("Set time each symbols transition graphic will be displayed");
-        spinner.setToolTipText("Set time each symbols transition graphic will be displayed");    
-        
-
-        simControl.add(previousSymbol);
-    	simControl.add(startStop);
-    	simControl.add(nextSymbol);
-    	simControl.add(timeLabel);
-        simControl.add(spinner);
-    	
-   
-        
+        _timeSpinner = new SpinnerNumberModel(1, 1, 10, 1);
+        _spinner = new JSpinner(_timeSpinner);
+        _spinner.setToolTipText("Set time each symbols transition graphic will be displayed");
+        _timeLabel = new JLabel("<html><center>Display<br/>Time</center></html> ");
+                
+        // Add all created buttons to the simulation control JPanel
+        _simControl.add(_previousSymbol);
+        _simControl.add(_startStopSymbol);
+        _simControl.add(_nextSymbol);
+        _simControl.add(_timeLabel);
+        _simControl.add(_spinner);
         
         //add simControl panel to simBarPanel
-        simBarPanel.add(simControl,BorderLayout.LINE_START);
-    	
+        this.add(_simControl, BorderLayout.LINE_START);
         
-      
-     
-       
-       
-       
-      
-       
-       // spacing
-       JPanel p = new JPanel();
-       p.setBorder(new EmptyBorder(10, 10, 10, 80) );
-       simBarPanel.add(p);
-       
-       
-    
-       
-       // Field for Tape input Field and Label
-       JPanel tapePanel = new JPanel();
-        JLabel tapeLabel = new JLabel("Tape Input");
-        JTextField tapeInput = new JTextField();
-        tapeInput.setColumns(10);
-       
-     
+        // spacing
+        JPanel p = new JPanel();
+        p.setBorder(new EmptyBorder(10, 10, 10, 80) );
+        this.add(p);
+        
+        // Field for Tape input Field and Label
+        _tapePanel = new JPanel();
+        _tapeLabel = new JLabel("Tape Input");
+        _tapeInput = new JTextField();
+        _tapeInput.setColumns(10);
+              
         //tapeInput.setActionCommand(TEXT_ENTERED);
-        tapePanel.add(tapeLabel);
-        tapePanel.add(tapeInput);
-        
+        _tapePanel.add(_tapeLabel);
+        _tapePanel.add(_tapeInput);   
         
         //add tape panel to simBar Panel
-        simBarPanel.add(tapePanel,BorderLayout.AFTER_LINE_ENDS);
- 
+        //simBarPanel.add(_tapePanel, BorderLayout.AFTER_LINE_ENDS);
+
+        // Add event listeners 
+        initializeEvents();
        
     }
-
-		
 	
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+	// PRE: An object of simBar has been instantiated
+	// POST: The string entered in the dialog through insert > string 
+	// menu option will be inserted into the tapeInput text field
+	// if tapeInput is not null 
+	private void initializeEvents()
+	{
+		// Add custom close event listener for when the string is input
+		// through the insert > string menu option. When the 
+		// dialog is closed we want to insert the string into
+		// the tape input text field.
+	 	CloseEvents.addCloseEventListener(new CloseEventListener()
+	 	{
+	 		public void close(CloseEvent e)
+	 		{
+	 			if (_tapeInput != null)
+	 			{
+	 				_tapeInput.setText(e.getText());
+	 			}
+	 		}
+	 	});
 	}
-
-
-	   
-
 	
 	
-
+	
 
 }
+
