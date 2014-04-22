@@ -228,17 +228,11 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	{
 		if (SwingUtilities.isLeftMouseButton(e)  && _canDrag == true)
 		{			
-			int xInitial = e.getX();
-			int yInitial = e.getY();
 			int x = e.getX() - 25;
 			int y = e.getY() - 25;
 			
-			_stateX = xInitial - _dragFromX;
-			_stateY = yInitial - _dragFromY;			
-			
 			_currentState.setXPosition(x);
             _currentState.setYPosition(y); 
-
 		}
 		
 	}	
@@ -253,10 +247,8 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 		//otherwise delete
 		if (SwingUtilities.isLeftMouseButton(e)) 
 		{
-			int xInitial = e.getX();
-			int yInitial = e.getY();
-			int x = xInitial - 25;
-			int y = yInitial - 25;
+			int x = e.getX() - 25;
+			int y = e.getY() - 25;
 			
 			_currentState.setXPosition(x);
 	        _currentState.setYPosition(y);  
