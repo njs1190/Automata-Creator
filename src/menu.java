@@ -264,56 +264,6 @@ public class menu
 
 // MENU EVENT CLASSES
 
-// State clicked event
-@SuppressWarnings("serial")
-class StateEvent extends EventObject
-{
-	private Data.StateType _type;
-	
-	public StateEvent(Object source, Data.StateType type)
-	{
-		super(source);
-		_type = type;
-	}
-	
-	public Data.StateType getType()
-	{
-		return _type;
-	}
-}
-
-interface StateEventListener extends EventListener
-{
-	public void stateSelected(StateEvent e);
-}
-
-class StateEvents
-{
-    static EventListenerList listenerList = new EventListenerList();
-	
-    static void addStateEventListener(StateEventListener l)
-	{
-		listenerList.add(StateEventListener.class, l);
-	}
-	
-	static void removeStateEventListener(StateEventListener l)
-	{
-		listenerList.remove(StateEventListener.class, l);
-	}
-	
-	static void sendStateEvent(StateEvent e)
-	{
-		Object[] listeners = listenerList.getListenerList();
-		for (int i = 0; i < listeners.length; i++)
-		{
-			if (listeners[i] == StateEventListener.class)
-			{
-				((StateEventListener) listeners[i+1]).stateSelected(e);
-			}
-		}
-	}
-}
-
 // Clear canvas clicked event 
 @SuppressWarnings("serial")
 class ClearCanvasEvent extends EventObject
