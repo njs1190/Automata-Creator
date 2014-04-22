@@ -204,7 +204,7 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 	public void mousePressed(MouseEvent e) 
 	{
 		//checks to see if it is the left click
-		/*if(SwingUtilities.isLeftMouseButton(e))
+		if(SwingUtilities.isLeftMouseButton(e))
 		{
 			// gets the source of button click  1 = left click, 3 = right click
 			int xInitial = e.getX();  // x-position of mouse
@@ -213,29 +213,13 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			State state = isState(xInitial, yInitial);
 			if (state != null)
 			{
-				_canDrag = true;
 				_dragFromX = xInitial - _stateX;  // how far from left
 	            _dragFromY = yInitial - _stateY;  // how far from top
 	            _currentState = state;
 			}
+		}
+
 			
-			else
-			{
-				_canDrag = true;
-				drawState(xInitial - 25, yInitial - 25);
-				DrawableObject s = new State(Data.StateType.START, "q0", 0, xInitial - 25, yInitial - 25, STATE_DIAMETER);
-				_drawableObjects.add(s);
-				//_states.add(s);
-				
-				//_currentState = s;
-			}
-		}
-		
-		else
-		{
-			_canDrag = false;
-		}
-			*/
 	}
 	
 	// PRE: Mouse s dragged
@@ -253,7 +237,8 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			_stateY = yInitial - _dragFromY;			
 			
 			_currentState.setXPosition(x);
-            _currentState.setYPosition(y);  
+            _currentState.setYPosition(y); 
+
 		}
 		
 	}	
@@ -273,17 +258,11 @@ public class myCanvas extends JPanel implements MouseListener, MouseMotionListen
 			int x = xInitial - 25;
 			int y = yInitial - 25;
 			
-			if (!(xInitial > X_BORDER))
-			{
-				//_states.remove(_currentState);
-				_stateObjectPanel.repaint();
-			}
+			_currentState.setXPosition(x);
+	        _currentState.setYPosition(y);  
+	        
+	        repaint();
 			
-			else
-			{
-	            _currentState.setXPosition(x);
-	            _currentState.setYPosition(y);           
-			}
 		}
 	}
 	
