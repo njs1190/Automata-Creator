@@ -1,3 +1,8 @@
+// Author: Jidaeno
+// Class: Menu.java
+// Purpose: Creates the menu bar that is displayed in the main frame 
+// including menu items such as file, edit, insert, help
+
 package automataCreator;
 
 import java.awt.event.*;
