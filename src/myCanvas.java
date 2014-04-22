@@ -1,3 +1,9 @@
+// Author: Jidaeno
+// Class: MyCanvas.java
+// Purpose: This class is the core class of the Automata Creator solution. 
+// It is responsible for drawing the states and transitions, which make up 
+// an automaton
+
 package automataCreator;
 
 import java.awt.*;
