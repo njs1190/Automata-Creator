@@ -1,3 +1,11 @@
+// Author: Jidaeno
+// Class: OutPanel.java
+// Purpose: Creates the output panel that is displayed on the bottom of the 
+// main window. The output panel consists of the output window which is responsible
+// for providing the user feedback, and the the text fields that will display the
+// the current symbol being simulated, the symbols that have been simulated, and the
+// remaining symbols to be simulated
+
 package automataCreator;
 
 import java.awt.BorderLayout;
