@@ -1,3 +1,9 @@
+// Author: Jidaeno
+// Class: StateObjectPanel.java
+// Purpose: Displays the state object buttons on the left side of the main window.
+// If they are clicked a state of that type will be added to the canvas that can
+// then be dragged about the canvas
+
 package automataCreator;
 
 import java.awt.GridLayout;
