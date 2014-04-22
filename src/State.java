@@ -1,3 +1,9 @@
+// Author: Jidaeno
+// Class: State.java
+// Purpose: Provides the attributes and methods of a state object that
+// will be added to the canvas. This class extends from the Drawable Object 
+// super class
+
 package automataCreator;
 
 import java.awt.Graphics;
