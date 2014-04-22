@@ -1,3 +1,9 @@
+// Author: Jidaeno
+// Class: Transition.java
+// Purpose: Provides the attributes and methods of a transition object that
+// will be added to the canvas between two state objects. This class extends
+// from the drawable object super class
+
 package automataCreator;
 
 import java.awt.Graphics;
