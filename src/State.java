@@ -100,7 +100,7 @@ public class State extends DrawableObject
 	public void Draw(Graphics g)
 	{
 		g.drawOval(_xPosition, _yPosition, 50, 50);
-		g.drawString("Q1", _xPosition + 19, _yPosition + 29); // center of circle	
+		g.drawString(_name, _xPosition + 19, _yPosition + 29); // center of circle	
 		
 		// Create and send canvas event
 		CanvasEvent event = new CanvasEvent(this); 
