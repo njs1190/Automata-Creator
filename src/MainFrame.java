@@ -1,7 +1,7 @@
 // Author: Jidaeno
 // Class: MainFrame.java
-// Purpose: Responsible for setting up the user interface and also implementing
-// the save and open methods 
+// Purpose: Creates the main window that will be shown known as the Automata Creator.
+// This class is also responsible the saving and opening of projects
 
 package automataCreator;
 
@@ -27,11 +27,9 @@ public class MainFrame
 	 private static MainFrame _mainFrame;	 
 	 private  JFrame _frame; 
 	 private menu _menu; 	 
-	 private JPanel simBarPanel;
 	 private simBar _simulationBar;	 
-	 private JPanel outputPanel;
 	 private outPanel _outputPanel;	 
-	 private JPanel canvasPanel;
+	 private StateObjectPanel _stateObjectPanel;
 	 private myCanvas _myCanvas;	 
 	 private SaveTimer _timer;	 
 	 private boolean _dirty;
@@ -131,6 +129,10 @@ public class MainFrame
         // Create the Output Window
         _outputPanel = new outPanel();
         _outputPanel.initializeOutputPanel();
+        
+        // Create the state object panel
+        _stateObjectPanel = new StateObjectPanel();
+        _stateObjectPanel.initializeStateObjectPanel();
 
         // Create scrollPane for canvas, 
         _myCanvas = new myCanvas();
@@ -139,6 +141,7 @@ public class MainFrame
         // Add all components to the totalGUI JPanel
         totalGUI.add(_simulationBar, BorderLayout.NORTH);
         totalGUI.add(_outputPanel, BorderLayout.SOUTH);
+        totalGUI.add(_stateObjectPanel, BorderLayout.WEST);
         totalGUI.add(_myCanvas, BorderLayout.CENTER);    
 
         totalGUI.setOpaque(true);
