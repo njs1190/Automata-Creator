@@ -1,3 +1,8 @@
+// Author: Jidaeno
+// Class: SaveTimer.java
+// Purpose: Creates a timer that will go off every minute in order to
+// automatically save the test in case of a unexpected crash
+
 package automataCreator;
 
 import java.util.Timer;
