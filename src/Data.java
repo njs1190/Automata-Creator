@@ -1,6 +1,6 @@
 package automataCreator;
 
-public class Data 
+public class Data
 {
 	public enum Symbol
 	{
@@ -12,8 +12,10 @@ public class Data
 	public enum StateType
 	{
 		START,
-		STARTFINAL,
-		FINAL,
+		STARTACCEPT,
+		ACCEPT,
 		INTERMEDIATE
 	}
 }
+
+
