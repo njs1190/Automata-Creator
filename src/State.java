@@ -1,12 +1,19 @@
+// State.java
 // Author: Jidaeno
-// Class: State.java
-// Purpose: Provides the attributes and methods of a state object that
-// will be added to the canvas. This class extends from the Drawable Object 
-// super class
+// Course: CSC4910
+// Description: This class is used to create an instance of a state object.
+// This class inherits from its superclass DrawableObject and overrides its
+// draw method.
 
 package automataCreator;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 
 public class State extends DrawableObject
 {
@@ -16,6 +23,7 @@ public class State extends DrawableObject
 	protected int _xPosition;
 	protected int _yPosition;
 	protected int _diameter;
+	protected boolean _current;
 	
 	// Constructors
 	public State()
@@ -26,9 +34,10 @@ public class State extends DrawableObject
 		_xPosition = -1;
 		_yPosition = -1;
 		_diameter = -1;
+		_current = false;
 	}
 	
-	public State(Data.StateType type, String name, int number, int xPosition, int yPosition, int diameter)
+	public State(Data.StateType type, String name, int number, int xPosition, int yPosition, int diameter, boolean current)
 	{
 		_type = type;
 		_name = name;
@@ -36,6 +45,7 @@ public class State extends DrawableObject
 		_xPosition = xPosition;
 		_yPosition = yPosition;
 		_diameter = diameter;
+		_current = current;
 		
 	}
 	
@@ -70,6 +80,11 @@ public class State extends DrawableObject
 		_diameter = diameter;
 	}
 	
+	public void setCurrent(boolean current)
+	{
+		_current = current;
+	}
+	
 	
 	// Get methods
 	public Data.StateType getType()
@@ -102,16 +117,113 @@ public class State extends DrawableObject
 		return _diameter;
 	}
 	
+	public boolean getCurrent()
+	{
+		return _current;
+	}
+	
 	// Inherited methods
 	public void Draw(Graphics g)
 	{
-		g.drawOval(_xPosition, _yPosition, 50, 50);
-		g.drawString(_name, _xPosition + 19, _yPosition + 29); // center of circle	
-		
-		// Create and send canvas event
-		CanvasEvent event = new CanvasEvent(this); 
-		CanvasEvents.sendCanvasEvent(event);
-		
+		File file = null;
+		BufferedImage image = null;
+			
+		try 
+		{
+			if (_type == Data.StateType.START)
+			{
+				if (_current)
+				{
+					file = new File("canvasStartSim.gif");
+				}
+				
+				else
+				{
+					file = new File("canvasStart.gif");
+				}
+			}
+			
+			else if (_type == Data.StateType.STARTACCEPT)
+			{
+				if (_current)
+				{
+					file = new File("canvasStartASim.gif");
+				}
+				
+				else
+				{
+					file = new File("canvasStartA.gif");
+				}
+			}
+			
+			else if (_type == Data.StateType.INTERMEDIATE)
+			{
+				if (_current)
+				{
+					file = new File("canvasIntermediateSim.gif");
+				}
+				
+				else
+				{
+					file = new File("canvasIntermediate.gif");
+				}
+			}
+			
+			else if (_type == Data.StateType.ACCEPT)
+			{
+				if (_current)
+				{
+					file = new File("canvasAcceptSim.gif");
+				}
+				
+				else
+				{
+					file = new File("canvasAccept.gif");
+				}
+			}
+			
+			image = ImageIO.read(file);
+			if (_type == Data.StateType.START || _type == Data.StateType.STARTACCEPT)
+			{
+				g.drawImage(image, _xPosition, _yPosition, 67, 50, null);	
+			}
+			else
+			{
+				g.drawImage(image, _xPosition, _yPosition, 50, 50, null);
+			}
+			
+			// Center of circle for names with numbers under 10
+			if (_number < 10)
+			{
+				if (_type == Data.StateType.START || _type == Data.StateType.STARTACCEPT)
+				{
+					g.drawString(_name, _xPosition + 36, _yPosition + 29); // center of circle	
+				}
+				else
+				{
+					g.drawString(_name, _xPosition + 19, _yPosition + 29); // center of circle
+				}
+			}
+			
+			// Center of circle for names with numbers greater than 10
+			if (_number >= 10)
+			{
+				if (_type == Data.StateType.START || _type == Data.StateType.STARTACCEPT)
+				{
+					g.drawString(_name, _xPosition + 31, _yPosition + 29); // center of circle	
+				}
+				else 
+				{
+					g.drawString(_name, _xPosition + 14, _yPosition + 29); // center of circle
+				}
+			}
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+
+					
 	}
 
 }
