@@ -1,14 +1,15 @@
+// SimulationPanel.java
 // Author: Jidaeno
-// Class: SimBar.java
-// Purpose: Creates the simulation bar that is added to the top of the main window.
-// The simulation bar contains the previous and next symbol button, the start and stop
-// simulation buttons as well as a spinner that will allow the user to decide
-// for how many seconds they would like the simulation to pause on each symbol during
-// simulation
+// Course: CSC4910
+// Description: This class is used to create the simulation panel that is docked to the top
+// of the MainFrame underneath the main menu bar. 
 
 package automataCreator;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -21,8 +22,11 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
-public class simBar extends JPanel
+public class SimulationPanel extends JPanel 
 {
+	MainFrame _mainFrame;
+	
+	// Simulation bar controls
 	JPanel _simControl;
 	JButton _previousSymbol;
 	JButton _startStopSymbol;
@@ -34,9 +38,9 @@ public class simBar extends JPanel
     JLabel _tapeLabel;
 	JTextField _tapeInput;
 	
-	public simBar()
+	public SimulationPanel(MainFrame mainFrame)
 	{
-		
+		_mainFrame = mainFrame;
 	}	
 	
 	public void initializeSimBar() 
@@ -47,29 +51,59 @@ public class simBar extends JPanel
         //Creates 3 buttons for the state panel
         _previousSymbol = new JButton("<html><center>Previous<br/>Symbol</center></html>");
         _previousSymbol.setToolTipText("Go to previous symbol on tape Input");
+        // Initially set to disabled because users can't click previous unless
+        // the play or next symbol button has been selected because at least one symbol must be processed
+        // before previous symbol can be used
+        _previousSymbol.setEnabled(false);         
         _previousSymbol.setFocusable(false); // Turn off highlighting after user click
-        ImageIcon previousSymbolIcon = new ImageIcon("Images/back.png");
+        ImageIcon previousSymbolIcon = new ImageIcon("back.png");
         _previousSymbol.setIcon(previousSymbolIcon);
+        _previousSymbol.addActionListener(new ActionListener()
+        {
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				_mainFrame.previousSymbol();				
+			}
+        	
+        });
         
         _startStopSymbol = new JButton("<html><center>Start<br/>Simulation</center></html>");
         _startStopSymbol.setToolTipText("Start auto simulation");
         _startStopSymbol.setFocusable(false); // Turn off highlighting after user click
-        ImageIcon start = new ImageIcon("Images/play.png");
-        ImageIcon stop = new ImageIcon ("Images/pause.png");
+        ImageIcon start = new ImageIcon("play.png");
         _startStopSymbol.setIcon(start);
+        _startStopSymbol.addActionListener(new ActionListener()
+        {
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				_mainFrame.simulate();				
+			}
+        	
+        });
         
         _nextSymbol = new JButton("<html><center>Next<br/>Symbol</center></html>");
         _nextSymbol.setToolTipText("Go to next symbol on tape input");
         _nextSymbol.setFocusable(false); // Turn off highlighting after user click
-        ImageIcon nextSymbolIcon = new ImageIcon("Images/next.png");
+        ImageIcon nextSymbolIcon = new ImageIcon("next.png");
         _nextSymbol.setIcon(nextSymbolIcon);
+        _nextSymbol.addActionListener(new ActionListener()
+        {
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				_mainFrame.nextSymbol();				
+			}
+        	
+        });
         
         _simControl.setBorder(BorderFactory.createEmptyBorder(0,110,0,0));
         
         // Field to specify amount of time transition Graphics are displayed during auto-simulation
         _timeSpinner = new SpinnerNumberModel(1, 1, 10, 1);
         _spinner = new JSpinner(_timeSpinner);
-        _spinner.setToolTipText("Set time each symbols transition graphic will be displayed");
+        _spinner.setToolTipText("Set the time (1- 10 seconds) each symbol transition will be displayed");
         _timeLabel = new JLabel("<html><center>Display<br/>Time</center></html> ");
                 
         // Add all created buttons to the simulation control JPanel
@@ -93,17 +127,13 @@ public class simBar extends JPanel
         _tapeInput = new JTextField();
         _tapeInput.setColumns(10);
               
-        //tapeInput.setActionCommand(TEXT_ENTERED);
         _tapePanel.add(_tapeLabel);
         _tapePanel.add(_tapeInput);   
-        
-        //add tape panel to simBar Panel
-        //simBarPanel.add(_tapePanel, BorderLayout.AFTER_LINE_ENDS);
 
         // Add event listeners 
         initializeEvents();
-       
-    }
+     
+	}
 	
 	// PRE: An object of simBar has been instantiated
 	// POST: The string entered in the dialog through insert > string 
@@ -121,13 +151,36 @@ public class simBar extends JPanel
 	 		{
 	 			if (_tapeInput != null)
 	 			{
-	 				_tapeInput.setText(e.getText());
+	 				_tapeInput.setText(e._text);
 	 			}
 	 		}
 	 	});
 	}
 	
+	public int getDelayTime()
+	{
+		return (Integer) _spinner.getValue();
+	}
 	
+	// PRE: _previousSymbol is not null
+	// POST: _previousSymbol is enabled or disabled 
+	public void enablePreviousButton(boolean enable)
+	{
+		if (_previousSymbol != null)
+		{
+			_previousSymbol.setEnabled(enable);
+		}
+	}
+	
+	// PRE: _nextSymbol is not null
+	// POST: _nextSymbol is enabled or disabled 
+	public void enableNextButton(boolean enable)
+	{
+		if (_nextSymbol != null)
+		{
+			_nextSymbol.setEnabled(enable);
+		}
+	}
 	
 
 }
