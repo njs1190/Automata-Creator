@@ -1,12 +1,18 @@
+// SaveTimer.java
 // Author: Jidaeno
-// Class: SaveTimer.java
-// Purpose: Creates a timer that will go off every minute in order to
-// automatically save the test in case of a unexpected crash
+// Course: CSC4910
+// Description: This class is used to generate an event every 2 minutes.
+// Every two minutes the project will automatically be saved to the user
+// desktop.
 
 package automataCreator;
 
+import java.util.EventListener;
+import java.util.EventObject;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.event.EventListenerList;
 
 public class SaveTimer 
 {
@@ -24,16 +30,58 @@ public class SaveTimer
 	// case of an unexpected failure
 	public void StartTimer()
 	{
-	    timer.schedule(new RunTask(), 60000, 60000);							
+	    timer.schedule(new RunTask(), 1200000, 1200000);							
 	}
 	
 	class RunTask extends TimerTask
 	{
 		public void run()
 		{
-			// Here we will save the test automatically for the user
-			// in the case of an unexpected crash we do not want the 
-			// user to lose their work
+			TimerEvent event = new TimerEvent(this); 
+        	TimerEvents.sendTimerEvent(event);
+		}
+	}
+}
+
+//Create a close event 
+@SuppressWarnings("serial")
+class TimerEvent extends EventObject
+{
+	public TimerEvent(Object source)
+	{
+		super(source);
+	}
+	
+}
+
+interface TimerEventListener extends EventListener
+{
+	public void timerEvent(TimerEvent e);
+}
+
+class TimerEvents
+{
+    static EventListenerList listenerList = new EventListenerList();
+	
+    static void addTimerEventListener(TimerEventListener l)
+	{
+		listenerList.add(TimerEventListener.class, l);
+	}
+	
+	static void removeTimerEventListener(TimerEventListener l)
+	{
+		listenerList.remove(TimerEventListener.class, l);
+	}
+	
+	static void sendTimerEvent(TimerEvent e)
+	{
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = 0; i < listeners.length; i++)
+		{
+			if (listeners[i] == TimerEventListener.class)
+			{
+				((TimerEventListener) listeners[i+1]).timerEvent(e);
+			}
 		}
 	}
 }
