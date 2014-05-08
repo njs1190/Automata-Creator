@@ -1,7 +1,8 @@
+// DrawableObject.java
 // Author: Jidaeno
-// Class: DrawableObject.java
-// Purpose: Objects extended from this class will implement their
-// own draw method
+// Course: CSC4910
+// Description: This class is used as a superclass for state objects and transitions objects. 
+// The subclasses override the draw method. 
 
 package automataCreator;
 
