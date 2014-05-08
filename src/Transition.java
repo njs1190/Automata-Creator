@@ -1,18 +1,29 @@
+// Transition.java
 // Author: Jidaeno
-// Class: Transition.java
-// Purpose: Provides the attributes and methods of a transition object that
-// will be added to the canvas between two state objects. This class extends
-// from the drawable object super class
+// Course: CSC4910
+// Description: This class is used to create an instance of a transition object.
+// This class inherits from its superclass DrawableObject and overrides its
+// draw method.
 
 package automataCreator;
-
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.*;
+
 
 public class Transition extends DrawableObject
 {
 	protected State _to;
 	protected State _from;
 	protected Data.Symbol _symbol;
+	protected boolean _current;
 	
 	// Constructors
 	public Transition()
@@ -20,51 +31,236 @@ public class Transition extends DrawableObject
 		_to = null;
 		_from = null;
 		_symbol = null;
+		_current = false;
 	}
 	
-	public Transition(State to, State from, Data.Symbol symbol)
+	public Transition(State from, State to, Data.Symbol symbol, boolean current)
 	{
-		_to = to;
 		_from = from;
+		_to = to;		
 		_symbol = symbol;
+		_current = current;
 	}
 	
 	// Set methods
-	public void setTo(State to)
-	{
-		_to = to;
-	}
 	
 	public void setFrom(State from)
 	{
 		_from = from;
 	}
 	
+	public void setTo(State to)
+	{
+		_to = to;
+	}
+		
 	public void setSymbol(Data.Symbol symbol)
 	{
 		_symbol = symbol;
 	}
 	
-	// Get methods
-	public State getTo()
+	public void setCurrent(boolean current)
 	{
-		return _to;
+		_current = current;
 	}
+	
+	// Get methods
 	
 	public State getFrom()
 	{
 		return _from;
 	}
 	
+	public State getTo()
+	{
+		return _to;
+	}
+
 	public Data.Symbol getSymbol()
 	{
 		return _symbol;
 	}
 	
+	public boolean getCurrent()
+	{
+		return _current;
+	}
+	
 	// Inherited Methods
 	public void Draw(Graphics g)
 	{
+		String s = "";
 		
+		//  radius of state
+		double radius = 25;
+		
+		// variables for determining arrow head
+		double phi = Math.toRadians(145);
+		int arrowHead = 10;
+		
+		// If a symbol has been added, draw the symbol
+		if (_symbol != null)
+		{
+			if (_symbol == Data.Symbol.ONE)
+			{
+				s = "1";
+			}
+			
+			else if (_symbol == Data.Symbol.ZERO)
+			{
+				s ="0";
+			}
+			
+			else if (_symbol == Data.Symbol.BOTH)
+			{
+				s = "0, 1";
+			}
+			
+			else
+			{
+				s = "";
+			}
+		}
+					
+		Graphics2D g2D = (Graphics2D) g;
+		g2D.setStroke(new BasicStroke(2)); // set width of line 
+		if (_current)
+		{
+			Color color = new Color(0x0099FF);  
+			g2D.setColor(color);
+		}
+		
+		else
+		{
+			g2D.setColor(Color.BLACK);
+		}
+
+		if (_to != _from)
+		{
+			int x1, x2, y1, y2 = 0;
+			
+			// Get center points of states 
+			if (_from.getType() == Data.StateType.START || _from.getType() == Data.StateType.STARTACCEPT){
+				x1 = _from.getXPosition() + 42;
+				y1 = _from.getYPosition() + 25;
+			}
+			
+			else
+			{
+				x1 = _from.getXPosition() + 25;
+				y1 = _from.getYPosition() + 25;
+			}
+				
+			if (_to.getType() == Data.StateType.START || _to.getType() == Data.StateType.STARTACCEPT)
+			{
+				x2 = _to.getXPosition() + 42;
+				y2 = _to.getYPosition() + 25;
+			}
+			
+			else
+			{
+				x2 = _to.getXPosition() + 25;
+				y2 = _to.getYPosition() + 25;
+			}			
+							
+			Point2D p1 = new Point2D.Double(x1, y1);
+			Point2D p2 = new Point2D.Double(x2, y2);
+				
+			// Adjusted Point 1 
+			// Radius / distance = delta x' / delta x 		
+			double distance = p1.distance(p2);		
+			// Ratio -> radius(always 25) / distance
+			double ratio = radius / distance;		
+			double deltaX = x2 - x1;		
+			double deltaXPrime = deltaX * ratio;
+			double deltaY = y2 - y1;
+			double deltaYPrime = deltaY * ratio;
+			
+			// Adjusted Point 1
+			double adjustedX1 = deltaXPrime + x1;			
+			double adjustedY1 = deltaYPrime + y1;
+			
+			// Adjusted Point 2
+			double adjustedX2 = (deltaXPrime * -1) + x2;
+			double adjustedY2 = (deltaYPrime * -1) + y2;
+			
+			Point2D newP1 = new Point2D.Double(adjustedX1, adjustedY1);
+			Point2D newP2 = new Point2D.Double(adjustedX2, adjustedY2);		
+				
+			// Draw the transition
+			Line2D line = new Line2D.Double(newP1, newP2);
+			g2D.draw(line);
+			
+			// Draw arrow head on line 
+			double changeY = newP1.getY() - newP2.getY();
+			double changeX = newP1.getX() - newP2.getX();
+			double theta = Math.atan2(changeY,  changeX);
+			double x, y;
+			double rho = theta + phi;
+			x = newP2.getX() - arrowHead * Math.cos(rho);
+			y = newP2.getY() - arrowHead * Math.sin(rho);
+			g2D.draw(new Line2D.Double(newP2.getX(), newP2.getY(), x, y));
+			
+			// Draw arrow head on opposite side of line
+			rho = theta - phi;
+			x = newP2.getX() - arrowHead * Math.cos(rho);
+			y = newP2.getY() - arrowHead * Math.sin(rho);
+			g2D.draw(new Line2D.Double(newP2.getX(), newP2.getY(), x, y));
+		
+			
+			// Find the midpoint of the transition drawn and draw the symbol 
+			int symbolX = (int)(((adjustedX2 - adjustedX1) / 2) + adjustedX1);
+			int symbolY = (int)(((adjustedY2 - adjustedY1) / 2) + adjustedY1);
+			g2D.drawString(s, symbolX, symbolY - 2);
+							
+		}
+		
+		// Draw a self-loop on the to/from state
+		else
+		{
+			// Find state position
+			int x = _from.getXPosition();
+			int y = _from.getYPosition();
+			
+			File file = null;
+			BufferedImage image = null;
+			
+			// Using image for self loop transition
+			if (_current)
+			{
+				file = new File("selfLoopSim.gif");
+			}			
+			else
+			{
+				file = new File("selfLoop.gif");
+			}		
+			// try catch on reading the image
+			try {
+				image = ImageIO.read(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// Draw image
+			if (_from.getType() == Data.StateType.START || _from.getType() == Data.StateType.STARTACCEPT){
+				g.drawImage(image, x + 29, y - 25, 25, 25, null);
+				if(_symbol == Data.Symbol.BOTH)
+					g2D.drawString(s, x + 33, y - 28);
+				else
+					g2D.drawString(s, x + 39, y - 28);
+			}
+			else
+			{
+				g.drawImage(image, x + 12, y - 25, 25, 25, null);
+				if(_symbol == Data.Symbol.BOTH)
+					g2D.drawString(s, x + 16, y - 28);
+				else
+					g2D.drawString(s, x + 22, y - 28);
+			}
+		}
 	}
-	
 }
+
+	
+
