@@ -36,6 +36,7 @@ public class Transition extends DrawableObject
 		_from = null;
 		_symbol = null;
 		_current = false;
+		_tType = -1;
 	}
 	
 	public Transition(State from, State to, Data.Symbol symbol, boolean current, int type)
@@ -69,6 +70,11 @@ public class Transition extends DrawableObject
 		_current = current;
 	}
 	
+	public void setTransitionType(int tType)
+	{
+		_tType = tType;
+	}
+	
 	// Get methods
 	
 	public State getFrom()
@@ -89,6 +95,11 @@ public class Transition extends DrawableObject
 	public boolean getCurrent()
 	{
 		return _current;
+	}
+	
+	public int getTransitionType()
+	{
+		return _tType;
 	}
 	
 	// Inherited Methods
@@ -204,7 +215,8 @@ public class Transition extends DrawableObject
 			double symbolCoordX, symbolCoordY;
 			int offSetLength = 30;
 			// drawing upper curve
-			if(_tType == 1){
+			if(_tType == 1)
+			{
 				// First offset coordinate
 				phi = Math.toRadians(270);
 				rho = theta + phi;
@@ -219,7 +231,8 @@ public class Transition extends DrawableObject
 				g2D.drawString(s, (int)symbolCoordX, (int)symbolCoordY + 4);
 			}
 			// drawing lower curve
-			else if(_tType == 2){
+			else if(_tType == 2)
+			{
 				// Second offset coordinate
 				phi = Math.toRadians(90);
 				rho = theta + phi;
