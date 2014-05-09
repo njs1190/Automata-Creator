@@ -45,6 +45,7 @@ public class UndoManagement
         _isUndoRedo = false;
     }
 
+    // PRE: An action has been performed 
     // POST: Adds an action or block to the active stack.  The active stack is either 
     // the undo stack, the re-do stack (if we are performing an undo operation) or 
     // a helper stack used to group operations.
@@ -53,9 +54,9 @@ public class UndoManagement
         AddItemToActiveStack(action);
     }
 
+    // PRE: The series of steps within one action is added to the active stack 
     // POST: Helper function for adding items to the active stack.  The public function 
-    // allows only UndoAction to be added to the stack.  Internally, we need to 
-    // be able to add both UndoAction Objects and Stack Objects.
+    // allows only UndoAction to be added to the stack.  
     private void AddItemToActiveStack(Object item)
     {
         // If this action is not coming from Undo/Re-do and there are items in the 
@@ -74,6 +75,7 @@ public class UndoManagement
         NotifyListeners();
     }
 
+    // PRE: The stacks are created 
     // POST: Clears all stacks, so that all of the actions of block of actions
     // from the undo, re-do and active stacks are gone. The user should
     // not be able to undo or re-do any of the actions that were previously
@@ -100,6 +102,7 @@ public class UndoManagement
         NotifyListeners();
     }
 
+    // PRE: 
     // POST: Removes an action or block of actions from the Undo stack and asks
     // the action to do what is necessary to undo the action.
     public void Undo()
@@ -133,6 +136,7 @@ public class UndoManagement
         }
     }
 
+    // PRE: 
     // POST: Removes an action or block of actions from the re-do stack and asks
     // the action to do what is necessary to re-do the action
     public void Redo()
@@ -155,6 +159,7 @@ public class UndoManagement
         }
     }
 
+    // PRE: This is called before the action is actually performed 
     // POST: Marks the beginning of a block of operations to add to the undo or
     // re-do stacks
     public void BlockBegin()
@@ -165,6 +170,7 @@ public class UndoManagement
         _activeStack.push(blockStack);
     }
 
+    // PRE: This is called after the action has been performed 
     // POST: Marks the end of a block of operations to add to the undo or re-do
     // stacks
     public void BlockEnd()
@@ -176,6 +182,7 @@ public class UndoManagement
         AddItemToActiveStack(blockStack);
     }
 
+    // PRE: 
     // POST: Helper function for processing an item removed from the undo or re-do
     // stack.
     private void ProcessAction(Object item)
@@ -206,6 +213,7 @@ public class UndoManagement
         
     }
     
+    // PRE: An event has been sent 
     // POST: Generates an event notifying listeners
     // the status of the stack
     private void NotifyListeners()
