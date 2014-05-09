@@ -7,7 +7,6 @@
 package automataCreator;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -56,7 +55,7 @@ public class SimulationPanel extends JPanel
         // before previous symbol can be used
         _previousSymbol.setEnabled(false);         
         _previousSymbol.setFocusable(false); // Turn off highlighting after user click
-        ImageIcon previousSymbolIcon = new ImageIcon("back.png");
+        ImageIcon previousSymbolIcon = new ImageIcon(getClass().getResource("back.png"));
         _previousSymbol.setIcon(previousSymbolIcon);
         _previousSymbol.addActionListener(new ActionListener()
         {
@@ -71,7 +70,7 @@ public class SimulationPanel extends JPanel
         _startStopSymbol = new JButton("<html><center>Start<br/>Simulation</center></html>");
         _startStopSymbol.setToolTipText("Start auto simulation");
         _startStopSymbol.setFocusable(false); // Turn off highlighting after user click
-        ImageIcon start = new ImageIcon("play.png");
+        ImageIcon start = new ImageIcon(getClass().getResource("play.png"));
         _startStopSymbol.setIcon(start);
         _startStopSymbol.addActionListener(new ActionListener()
         {
@@ -86,7 +85,7 @@ public class SimulationPanel extends JPanel
         _nextSymbol = new JButton("<html><center>Next<br/>Symbol</center></html>");
         _nextSymbol.setToolTipText("Go to next symbol on tape input");
         _nextSymbol.setFocusable(false); // Turn off highlighting after user click
-        ImageIcon nextSymbolIcon = new ImageIcon("next.png");
+        ImageIcon nextSymbolIcon = new ImageIcon(getClass().getResource("next.png"));
         _nextSymbol.setIcon(nextSymbolIcon);
         _nextSymbol.addActionListener(new ActionListener()
         {
