@@ -340,6 +340,8 @@ public class OutputPanel extends JPanel
 		_outputTextArea.setText(message);
 	}
 	
+	// PRE:
+	// POST: The string in the output window will be returned 
 	public String getOutputContents()
 	{
 		return _outputTextArea.getText();
