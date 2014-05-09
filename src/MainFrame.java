@@ -210,7 +210,7 @@ public class MainFrame
 	 }  
 
 	// PRE:
-	// POST: 
+	// POST: All components in the frame are created 
 	public JPanel CreateContentPane()
 	{
         // We create a bottom JPanel to place everything on.
@@ -258,7 +258,7 @@ public class MainFrame
 		}
 	}
 	
-	// PRE:
+	// PRE: Called during initialization
 	// POST: Returns the public directory as determined by the system
 	public static String getPublicDirectory()
 	{
@@ -368,7 +368,8 @@ public class MainFrame
 		}
 	}
 	
-	
+	// PRE: Save as image is selected from the file menu bar
+	// POST: The canvas is saved as an image
 	public void saveImage() 
 	{
 		try
@@ -456,7 +457,7 @@ public class MainFrame
 		}		
 	}	
 
-	// PRE:
+	// PRE: Close is selected from the file menu or "x" is selcted from the frame
 	// POST: If dirty we will ask user if they want to
 	// save before closing, otherwise just close
 	public void close()
@@ -491,36 +492,36 @@ public class MainFrame
 
 	}
 	
-	// PRE:
-	// POST:
+	// PRE: Undo menu item is selected from the edit menu bar
+	// POST: Canvas returns to previous state before action 
 	public void undo()
 	{
 		_myCanvas.undo();
 	}
 	
-	// PRE:
-	// POST:
+	// PRE: Redo menu item is selected from the edit menu bar
+	// POST: Canvas returns to the new state after the action is redone
 	public void redo()
 	{
 		_myCanvas.redo();
 	}
 	
-	// PRE:
-	// POST:
+	// PRE:  Clear canvas menu item is selected from the edit menu bar
+	// POST: The canvas is cleared of all drawable objects
 	public void clearCanvas()
 	{
 		_myCanvas.clearCanvas();
 	}
 	
-	// PRE:
-	// POST:
+	// PRE: Copy menu item is selected from edit menu bar
+	// POST: Canvas is copied as an image
 	public void copyCanvas()
 	{
 		_myCanvas.copyCanvas();
 	}
 	
-	// PRE:
-	// POST:
+	// PRE: Create state menu option is selected from insret menu bar
+	// POST: State is added to the canvas
 	public void createState(Data.StateType type)
 	{
 		_myCanvas.createState(type);
@@ -566,12 +567,14 @@ public class MainFrame
 		ArrayList<DrawableObject> objects = _myCanvas.getDrawableObjects();
 		String tape = _outputPanel.getTape();
 		
+		// check to see if there is a string to process
 		if (tape == null)
 		{
 			_outputPanel.setOutputContents("No symbols on tape");
 			return;
 		}
 		
+		// if there is 
 		if (objects != null && tape != null)
 		{
 			// disable the main window
@@ -660,17 +663,20 @@ public class MainFrame
 		ArrayList<DrawableObject> objects = _myCanvas.getDrawableObjects();
 		String tape = _outputPanel.getTape();
 		
+		// check to see if there is a string to process
 		if (tape == null)
 		{
 			_outputPanel.setOutputContents("No symbols on tape");
 			return;
 		}
 		
+		// if there is a string, move on 
 		if (objects != null && tape != null)
 		{
 			// disable the main window
 			_frame.setEnabled(false);
 			
+			// is the dfa and string valid?
 			if (!_simulator.getValidated())
 			{			
 				_simulator.setStates(objects);
@@ -684,6 +690,7 @@ public class MainFrame
 				}
 			}
 			
+			// if valid, process next symbol 
 			if (validated)
 			{
 				_outputPanel.setOutputContents("");
