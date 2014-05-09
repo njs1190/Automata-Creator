@@ -899,8 +899,10 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	
-	// PRE: 
-	// POST: 
+	// PRE: Before an action is performed
+	// POST: The previous state of the object before an
+	// action is done that can be undone is performed is
+	// put on the stack
 	private void beginUndoCreateDelete()
 	{
 		if (_undoManagement != null)
@@ -914,8 +916,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		}
 	}
 	
-	// PRE:
-	// POST:
+	// PRE: After an action is performed
+	// POST: The new state of the object after the
+	// action is done is put on the stack 
 	private void endUndoCreateDelete()
 	{
 		if (_undoManagement != null)
