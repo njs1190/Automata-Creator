@@ -156,6 +156,8 @@ public class SimulationPanel extends JPanel
 	 	});
 	}
 	
+	// PRE:
+	// POST: The selected number of seconds is returned 
 	public int getDelayTime()
 	{
 		return (Integer) _spinner.getValue();
