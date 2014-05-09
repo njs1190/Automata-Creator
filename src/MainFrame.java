@@ -8,11 +8,9 @@
 package automataCreator;
 
 // Java classes
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -21,16 +19,21 @@ import java.beans.XMLEncoder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
-
-
-
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.filechooser.FileNameExtensionFilter;
 // Project classes
-import automataCreator.SimulationPanel;
-import automataCreator.Menu;
-import automataCreator.OutputPanel;
-import automataCreator.MyCanvas;
 
 public class MainFrame 
 { 
@@ -42,7 +45,7 @@ public class MainFrame
 	 private SimulationPanel _simulationBar;	 
 	 private OutputPanel _outputPanel;	 
 	 private StateObjectPanel _stateObjectPanel;
-	 private MyCanvas _myCanvas;
+	 private Canvas _myCanvas;
 	 private JScrollPane _scrollCanvas;
 	 private Simulation _simulator;
 	 private SaveTimer _timer;
@@ -114,7 +117,38 @@ public class MainFrame
 	 			if (_outputPanel != null)
 	 				_outputPanel.setOutputContents("Not Simulated");
 	 			
-	 			_simulator.testChanged();
+	 			_simulator.reset(false);
+	 			
+	 			// if the canvas has changed and a start state exists disable the start state options
+	 			// otherwise, set them all to true
+	 			boolean start = false;
+	 			for (DrawableObject obj : _myCanvas.getDrawableObjects())
+	 			{
+	 				if (obj instanceof State)
+	 				{
+	 					State state = (State)obj;
+	 					if (state.getType() == Data.StateType.START || state.getType() == Data.StateType.STARTACCEPT)
+	 					{
+	 						start = true;
+	 					}
+	 				}
+	 			}
+	 			
+	 			if (start)
+	 			{
+	 				_stateObjectPanel.enableStartStates(false);
+	 				_myCanvas.enableStartStates(false);
+	 				_menu.enableStartStates(false);
+	 			}
+	 			
+	 			else
+	 			{
+	 				_stateObjectPanel.enableStartStates(true);
+	 				_myCanvas.enableStartStates(true);
+	 				_menu.enableStartStates(true);
+	 			}
+	 			
+	 			
 	 			// repaint in case that some of the states or
 	 			// transitions are highlighted 
 	 			_myCanvas.repaint();
@@ -129,7 +163,7 @@ public class MainFrame
 				if (_outputPanel != null)
 	 				_outputPanel.setOutputContents("Not Simulated");
 				
-				_simulator.testChanged();
+				_simulator.reset(true);
 				// repaint in case that some of the states or 
 				// transitions are highlighted 
 				_myCanvas.repaint();
@@ -195,7 +229,7 @@ public class MainFrame
         _stateObjectPanel.initializeStateObjectPanel();
 
         // Create scrollPane for canvas, 
-        _myCanvas = new MyCanvas();
+        _myCanvas = new Canvas();
         _myCanvas.initializeCanvas();        
     	
         _scrollCanvas = new JScrollPane(_myCanvas);        
@@ -240,7 +274,7 @@ public class MainFrame
 	{
 		if (_dirty)
 		{
-			int save = JOptionPane.showConfirmDialog(null, "Would you like to save your automaton before starting a new project?", "Save Before Opening New Project", JOptionPane.YES_NO_OPTION);
+			int save = JOptionPane.showConfirmDialog(null, "Would you like to save your automaton before starting a new project?", "Save Before Starting New Project", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 			if (save == JOptionPane.YES_OPTION)
 			{
 				save();
@@ -252,6 +286,13 @@ public class MainFrame
 		
 		// Next clear all of the contents of the output
 		_outputPanel.clearContents();
+		
+		// clear simulation
+		_simulator.reset(false);
+		
+		_dirty = false;
+		setTitle("Automata Creator");
+		
 	}
 
 	// PRE: The save menu option is selected from the menu
@@ -339,9 +380,15 @@ public class MainFrame
 			
 			// set restraints 
 		    FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("*.jpg", "jpg");
-			file.setFileFilter(imageFilter);			
+			file.setFileFilter(imageFilter);	
 			
-			BufferedImage canvasCopy = new BufferedImage(_myCanvas.getSize().width, _myCanvas.getSize().height, BufferedImage.TYPE_INT_RGB); 
+			int max_x = _myCanvas.getMaxX(); // get the greatest x position so the entire canvas doesn't have to be copied
+			int max_y = _myCanvas.getMaxY(); // get the greatest y position so the entire canvas doesn't have to be copied 
+
+			max_x = max_x + 100;
+			max_y = max_y + 100;				
+			
+			BufferedImage canvasCopy = new BufferedImage(max_x, max_y, BufferedImage.TYPE_INT_RGB); 
 			// paint whatever is on the canvas onto the new copy of the canvas to be saved 
 			_myCanvas.paint(canvasCopy.getGraphics());
 			
@@ -398,7 +445,7 @@ public class MainFrame
 		        Object obj = decoder.readObject();
 		        decoder.close();
 		        
-		        ArrayList<DrawableObject> objects = ((MyCanvas)obj).getDrawableObjects();
+		        ArrayList<DrawableObject> objects = ((Canvas)obj).getDrawableObjects();
 		        _myCanvas.openProject(objects);
 			}
 
@@ -417,7 +464,7 @@ public class MainFrame
 		int close = -1;
 		if (_dirty)
 		{
-			close = JOptionPane.showConfirmDialog(null, "Would you like to save your automaton before closing?", "Save Before Closing", JOptionPane.YES_NO_CANCEL_OPTION);
+			close = JOptionPane.showConfirmDialog(null, "Would you like to save your automaton before closing?", "Save Before Closing", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 			if (close == JOptionPane.YES_OPTION)
 			{
 				save();
@@ -429,13 +476,12 @@ public class MainFrame
 			{
 				// Close Automata Creator 
 				System.exit(0);	
-			}
-			
+			}			
 		}
 		
 		else
 		{
-			close = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit Automata Creator", "Exit Automata Creator", JOptionPane.OK_CANCEL_OPTION);
+			close = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit Automata Creator", "Exit Automata Creator", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 			if (close == JOptionPane.OK_OPTION)
 			{
 				// Close Automata Creator 
