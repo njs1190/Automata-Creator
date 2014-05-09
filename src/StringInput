@@ -129,6 +129,9 @@ public class StringInput
 	
 	}
 	
+	
+	// PRE:
+	// POST: Returns the string entered in the text field
 	private String getText()
 	{
 		return _input.getText();
