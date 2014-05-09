@@ -235,47 +235,67 @@ public class Simulation
 	// whether each state has a transition on both 0 and 1
 	private boolean validateTransitions()
 	{
-		boolean validTransitions = true; // are the collection of transitions valid or not?		
+		boolean valid1 = true; // checks whether each state has a transition on 1 and 0
+		boolean valid2 = true; // checks whether each state has more than one transition on 1 or 0	
 
 		for (State state : _states)
 		{
 			boolean oneTransition = false; // does the state have a transition on a one?
 			boolean zeroTransition = false; // does the state have a transition on a zero?
+			int zero = 0;
+			int one = 0;
 			
 			for (Transition transition : _transitions)
 			{				
 				if (transition.getFrom() == state && transition.getSymbol() == Data.Symbol.ZERO)
 				{
 					zeroTransition = true;
+					zero++;
 				}
 				
 				if (transition.getFrom() == state && transition.getSymbol() == Data.Symbol.ONE)
 				{
 					oneTransition = true;
+					one++;
 				}
 				
 				if (transition.getFrom() == state && transition.getSymbol() == Data.Symbol.BOTH)
 				{
 					zeroTransition = true;
 					oneTransition = true;
+					zero++;
+					one++;
 				}
-
 			}
 			
 			if (!zeroTransition || !oneTransition)
 			{
-				validTransitions = false;
+				valid1 = false;
 			}
 			
+			if (zero > 1 || one > 1)
+			{
+				valid2 = false; 
+			}			
 		}
 		
-		if (!validTransitions)
+		if (!valid1)
 		{
 			_errorString = "One or more states do not have a transition "+
 			"on symbol 0 and on symbol 1";
 		}
 		
-		return validTransitions;
+		if (!valid2)
+		{
+			_errorString = "One or more states have more than one transition " +
+			"on a symbol 0 or on a symbol 1";
+		}
+		
+		if (!valid1 || !valid2)
+			return false;
+		
+		else
+			return true;
 		
 	}
 
@@ -305,13 +325,18 @@ public class Simulation
 	// popped off the stack re-processed
 	public void previousSymbol()
 	{
+		_currentTransition.getTo().setCurrent(false);
 		_currentTransition.setCurrent(false);
+		
+		
 		_currentTransition = _transitionsMade.pop();
 		_currentTransition.setCurrent(true);
 		
-		_currentState.setCurrent(false);
+		// although the current state is the transition from
+		// state, we want to highlight the to state to show
+		// where the transition was going to 
 		_currentState = _currentTransition.getFrom();
-		_currentState.setCurrent(true);
+		_currentTransition.getTo().setCurrent(true);
 
 	}
 	
@@ -379,7 +404,9 @@ public class Simulation
 
 	}
 	
-	// if not next, its previous
+	// PRE:Either the next step or previous step button was selected
+	// POST: The text fields in the output panel are updated 
+	// to have the correct contents
 	public void beginStep(boolean next)
 	{
 		if (next)
@@ -410,6 +437,9 @@ public class Simulation
 		
 	}
 	
+	// PRE: Either the previous symbol or the next symbol has been processed
+	// POST: The text fields in the output panel are updated 
+	// to have the correct contents
 	public void endStep(boolean next)
 	{
 		if (next)
@@ -469,8 +499,9 @@ public class Simulation
 	
 	public void beginSimulation()
 	{
-		if (_currentSymbolOnTape >= _tape.length() - 1)
+		if (_currentSymbolOnTape == _tape.length())
 		{
+			_currentSymbolOnTape = 0;
 			_transitionsMade.clear();
 			
 			if (_currentState!= null)
@@ -485,7 +516,6 @@ public class Simulation
 				_currentTransition = null;
 			}	
 			
-			_currentSymbolOnTape = 0;
 			
 			if (!_output.getProcessedSymbols().isEmpty())
 			{
@@ -545,8 +575,16 @@ public class Simulation
 	// POST: The variables that need to be reset
 	// in order to create a fresh start for a simulation
 	// are changed
-	public void testChanged()
+	public void reset(boolean typingEvent)
 	{
+		// if its  a typing event we dont want to 
+		// change the text we want to keep the way 
+		// the user sees it
+		if (_validated && !typingEvent)
+		{
+			_output.setTape(_tape);
+		}
+		
 		_dirty = true;
 		_validated = false;
 		
