@@ -34,7 +34,11 @@ class UndoCreateDelete extends UndoAction
 		  for (DrawableObject o : _collection)
 		  {
 			  if (o instanceof State)
+			  {
+				  State s = (State) o;
+			  	  s.setCurrent(false);
 				  states++;
+			  }
 			  
 			  else if (o instanceof Transition)
 			  {
