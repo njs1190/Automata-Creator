@@ -6,16 +6,19 @@
 // draw method.
 
 package automataCreator;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.QuadCurve2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+
 import javax.imageio.ImageIO;
-import java.awt.*;
 
 
 public class Transition extends DrawableObject
@@ -24,6 +27,7 @@ public class Transition extends DrawableObject
 	protected State _from;
 	protected Data.Symbol _symbol;
 	protected boolean _current;
+	protected int _tType;
 	
 	// Constructors
 	public Transition()
@@ -34,12 +38,13 @@ public class Transition extends DrawableObject
 		_current = false;
 	}
 	
-	public Transition(State from, State to, Data.Symbol symbol, boolean current)
+	public Transition(State from, State to, Data.Symbol symbol, boolean current, int type)
 	{
 		_from = from;
 		_to = to;		
 		_symbol = symbol;
 		_current = current;
+		_tType = type;
 	}
 	
 	// Set methods
@@ -93,10 +98,6 @@ public class Transition extends DrawableObject
 		
 		//  radius of state
 		double radius = 25;
-		
-		// variables for determining arrow head
-		double phi = Math.toRadians(145);
-		int arrowHead = 10;
 		
 		// If a symbol has been added, draw the symbol
 		if (_symbol != null)
@@ -185,18 +186,62 @@ public class Transition extends DrawableObject
 			double adjustedY2 = (deltaYPrime * -1) + y2;
 			
 			Point2D newP1 = new Point2D.Double(adjustedX1, adjustedY1);
-			Point2D newP2 = new Point2D.Double(adjustedX2, adjustedY2);		
-				
-			// Draw the transition
-			Line2D line = new Line2D.Double(newP1, newP2);
-			g2D.draw(line);
+			Point2D newP2 = new Point2D.Double(adjustedX2, adjustedY2);							
 			
-			// Draw arrow head on line 
+			// Find the midpoint of the two states
+			int symbolX = (int)(((adjustedX2 - adjustedX1) / 2) + adjustedX1);
+			int symbolY = (int)(((adjustedY2 - adjustedY1) / 2) + adjustedY1);
+			
+			// variables for determining geometry calculations
+			double phi, rho;
 			double changeY = newP1.getY() - newP2.getY();
 			double changeX = newP1.getX() - newP2.getX();
 			double theta = Math.atan2(changeY,  changeX);
+						
+			QuadCurve2D curveLine = new QuadCurve2D.Double();
+			// draw QuadCurve2D.Double with set points
+			double xOffSet, yOffSet; 
+			double symbolCoordX, symbolCoordY;
+			int offSetLength = 30;
+			// drawing upper curve
+			if(_tType == 1){
+				// First offset coordinate
+				phi = Math.toRadians(270);
+				rho = theta + phi;
+				xOffSet = symbolX - offSetLength * Math.cos(rho);
+				yOffSet = symbolY - offSetLength * Math.sin(rho);
+				changeY = yOffSet - newP2.getY();
+				changeX = xOffSet - newP2.getX();
+				// First symbol offset coordinate
+				symbolCoordX = symbolX - 25 * Math.cos(rho);
+				symbolCoordY = symbolY - 25 * Math.sin(rho);	
+				curveLine.setCurve(newP1.getX(), newP1.getY(), xOffSet, yOffSet, newP2.getX(), newP2.getY());
+				g2D.drawString(s, (int)symbolCoordX, (int)symbolCoordY + 4);
+			}
+			// drawing lower curve
+			else if(_tType == 2){
+				// Second offset coordinate
+				phi = Math.toRadians(90);
+				rho = theta + phi;
+				xOffSet = symbolX - offSetLength * Math.cos(rho);
+				yOffSet = symbolY - offSetLength * Math.sin(rho);
+				changeY = yOffSet - newP2.getY();
+				changeX = xOffSet - newP2.getX();
+				// Second symbol offset coordinate
+				symbolCoordX = symbolX - 30 * Math.cos(rho);
+				symbolCoordY = symbolY - 30 * Math.sin(rho);	
+				curveLine.setCurve(newP1.getX(), newP1.getY(), xOffSet, yOffSet, newP2.getX(), newP2.getY());
+				g2D.drawString(s, (int)symbolCoordX, (int)symbolCoordY - 3);
+			}	
+			g2D.draw(curveLine);	
+			
+			// Variables for determining arrow head
+			phi = Math.toRadians(155);
+			int arrowHead = 10;
+			// Draw arrow head on line 
+			theta = Math.atan2(changeY,  changeX);
 			double x, y;
-			double rho = theta + phi;
+			rho = theta + phi;
 			x = newP2.getX() - arrowHead * Math.cos(rho);
 			y = newP2.getY() - arrowHead * Math.sin(rho);
 			g2D.draw(new Line2D.Double(newP2.getX(), newP2.getY(), x, y));
@@ -206,13 +251,6 @@ public class Transition extends DrawableObject
 			x = newP2.getX() - arrowHead * Math.cos(rho);
 			y = newP2.getY() - arrowHead * Math.sin(rho);
 			g2D.draw(new Line2D.Double(newP2.getX(), newP2.getY(), x, y));
-		
-			
-			// Find the midpoint of the transition drawn and draw the symbol 
-			int symbolX = (int)(((adjustedX2 - adjustedX1) / 2) + adjustedX1);
-			int symbolY = (int)(((adjustedY2 - adjustedY1) / 2) + adjustedY1);
-			g2D.drawString(s, symbolX, symbolY - 2);
-							
 		}
 		
 		// Draw a self-loop on the to/from state
@@ -222,28 +260,32 @@ public class Transition extends DrawableObject
 			int x = _from.getXPosition();
 			int y = _from.getYPosition();
 			
-			File file = null;
+			URL url = null;
 			BufferedImage image = null;
 			
 			// Using image for self loop transition
 			if (_current)
 			{
-				file = new File("selfLoopSim.gif");
+				url = getClass().getResource("selfLoopSim.gif");
 			}			
 			else
 			{
-				file = new File("selfLoop.gif");
+				url = getClass().getResource("selfLoop.gif");
 			}		
 			// try catch on reading the image
-			try {
-				image = ImageIO.read(file);
-			} catch (IOException e) {
+			try 
+			{
+				image = ImageIO.read(url.openStream());
+			} 
+			catch (IOException e) 
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 			// Draw image
-			if (_from.getType() == Data.StateType.START || _from.getType() == Data.StateType.STARTACCEPT){
+			if (_from.getType() == Data.StateType.START || _from.getType() == Data.StateType.STARTACCEPT)
+			{
 				g.drawImage(image, x + 29, y - 25, 25, 25, null);
 				if(_symbol == Data.Symbol.BOTH)
 					g2D.drawString(s, x + 33, y - 28);
