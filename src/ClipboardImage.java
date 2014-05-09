@@ -1,7 +1,10 @@
 // ClipboardImage.java
 // Author: Jidaeno
 // Course: CSC4910
-// Description: This class is responsible for transferring the canvas as an image to the system clipboard 
+// Description: This class is responsible for transferring the canvas as an image to the system clipboard. 
+// This class is based off of a tutorial on http://omtlab.com/java-store-image-in-clipboard/ on copying and 
+// pasting images to the system clipboard.
+// A tutorial was needed for this functionality because as a group we were all unfamiliar with this task. 
 
 package automataCreator;
 
@@ -18,20 +21,20 @@ import java.io.IOException;
 public class ClipboardImage implements Transferable, ClipboardOwner 
 {
  
-    private Image canvasCopy;
+    private Image _canvasCopy;
  
     public ClipboardImage(Image canvasCopy) 
     {
-        this.canvasCopy = canvasCopy;
+        this._canvasCopy = canvasCopy;
     }
  
     @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException 
     {
  
-        if (flavor.equals(DataFlavor.imageFlavor) && canvasCopy != null) 
+        if (flavor.equals(DataFlavor.imageFlavor) && _canvasCopy != null) 
         {
-            return canvasCopy;
+            return _canvasCopy;
         } 
         
         else 
