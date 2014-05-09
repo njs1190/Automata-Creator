@@ -392,6 +392,9 @@ public class Menu
 		
 	}
 	
+	// PRE: There has been a canvas changed event 
+	// POST: The start menu items will either be 
+	// enabled or disabled 
 	public void enableStartStates(boolean enable)
 	{
 		_start.setEnabled(enable);
