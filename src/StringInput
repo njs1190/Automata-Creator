@@ -1,0 +1,182 @@
+// StringInput.java
+// Author: Jidaeno
+// Course: CSC4910
+// Description: This class provides a custom dialog window that
+// allows a string to be entered. If OK is chosen in the dialog window
+// an event will be generated notifying listeners that the window
+// has been closed and to look for the string enetered in the text box.
+
+package automataCreator;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.EventListener;
+import java.util.EventObject;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.event.EventListenerList;
+
+public class StringInput 
+{
+	private JDialog _dialog;
+	private JButton _okButton;
+	private JButton _cancelButton;
+	private JLabel _label;
+	private JScrollPane _scroll;
+	private JTextField _input;
+	
+	public StringInput()
+	{
+		
+	}
+	
+	// PRE: The user has clicked insert > string from the menu bar
+	// POST: A custom dialog window appears allowing a user to enter
+	// a string consisting of symbols from the binary alphabet {0, 1}
+	public void create()
+	{
+		_dialog = new JDialog();
+		_dialog.setTitle("Insert String");
+		_dialog.setSize(300, 90);
+		_dialog.setResizable(false);
+		
+		JPanel _buttonPanel = new JPanel();	
+		
+		_okButton = new JButton("OK");
+		_okButton.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	  CloseEvent event = new CloseEvent(this, getText()); 
+        	  CloseEvents.sendCloseEvent(event);
+        	  
+        	  _dialog.dispose();
+          }
+        	
+        });
+		
+		_cancelButton = new JButton("Cancel");
+		_cancelButton.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {
+        	_dialog.dispose();
+          }
+        	
+        });
+		
+		_buttonPanel.add(_okButton, BorderLayout.WEST);
+		_buttonPanel.add(_cancelButton, BorderLayout.EAST);
+		
+		_label = new JLabel("Enter String: ");
+		
+		_input = new JTextField();
+		_input.setToolTipText("{0, 1}");
+		_input.addKeyListener(new KeyListener()
+		{
+
+			@Override
+			public void keyPressed(KeyEvent e) 
+			{				
+				// Do not need to do anything here
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) 
+			{
+				if (e.getKeyChar() == '0' || e.getKeyChar() == '1')
+				{
+					_input.setCaretPosition(_input.getText().length());
+				}
+				
+				else if (((int)e.getKeyChar()) > 31 && ((int)e.getKeyChar()) < 127)
+				{
+					if (!_input.getText().isEmpty())
+					{
+						String currentText = _input.getText();
+						String newText = currentText.substring(0, currentText.length() - 1);						
+						_input.setText(newText);	
+					}
+				}
+						
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) 
+			{
+			}
+			
+		});
+		_scroll = new JScrollPane(_input);
+		_scroll.setHorizontalScrollBarPolicy(_scroll.HORIZONTAL_SCROLLBAR_NEVER);
+		_scroll.setPreferredSize(new Dimension(100, 20));
+		_scroll.setBorder(BorderFactory.createLoweredBevelBorder());
+		
+		_dialog.add(_label, BorderLayout.WEST);
+		_dialog.add(_input, BorderLayout.CENTER);
+		_dialog.add(_buttonPanel, BorderLayout.SOUTH);
+		_dialog.setVisible(true);
+	
+	}
+	
+	private String getText()
+	{
+		return _input.getText();
+	}
+
+}
+
+// Create a close event 
+@SuppressWarnings("serial")
+class CloseEvent extends EventObject
+{
+	String _text = "";
+	
+	public CloseEvent(Object source, String text)
+	{
+		super(source);
+		_text = text;
+	}
+}
+
+interface CloseEventListener extends EventListener
+{
+	public void close(CloseEvent e);
+}
+
+class CloseEvents
+{
+    static EventListenerList listenerList = new EventListenerList();
+	
+    static void addCloseEventListener(CloseEventListener l)
+	{
+		listenerList.add(CloseEventListener.class, l);
+	}
+	
+	static void removeCloseEventListener(CloseEventListener l)
+	{
+		listenerList.remove(CloseEventListener.class, l);
+	}
+	
+	static void sendCloseEvent(CloseEvent e)
+	{
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = 0; i < listeners.length; i++)
+		{
+			if (listeners[i] == CloseEventListener.class)
+			{
+				((CloseEventListener) listeners[i+1]).close(e);
+			}
+		}
+	}
+}
