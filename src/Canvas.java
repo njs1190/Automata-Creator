@@ -1,5 +1,4 @@
 // Canvas.java
-// Canvas.java
 // Author: Jidaeno
 // Course: CSC4910
 // Description: This class is used to handle the creation of an automaton.
@@ -242,21 +241,25 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		// checks to see if it is the left click
 		if (SwingUtilities.isLeftMouseButton(e))
 		{
+			_currentState = null;
 			int xInitial = e.getX();  // x-position of mouse
 			int yInitial = e.getY();  // y-position of mouse
 			
 			// check for state at this x and y position
 			State state = isState(xInitial, yInitial);
 			if (state != null)
-			{
-				_undoManagement.BlockBegin();
-		        _undoManagement.Add(new UndoStateMove(this, true, state, xInitial, yInitial));
-		        		        
+			{      
 	            _currentState = state;
+				
+				_dragFromX = xInitial - state.getXPosition();  // how far from left
+	            _dragFromY = yInitial - state.getYPosition();  // how far from top
+	            
+	            // begin the undo block for a state move
+				_undoManagement.BlockBegin();
+		        _undoManagement.Add(new UndoStateMove(this, true, state, state.getXPosition(), state.getYPosition()));		        		
 	            
 			}
-			_dragFromX = xInitial - state.getXPosition();  // how far from left
-            _dragFromY = yInitial - state.getYPosition();  // how far from top
+
 		}
 		
 	}
@@ -291,14 +294,18 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		//otherwise delete
 		if (SwingUtilities.isLeftMouseButton(e) && _currentState != null) 
 		{
-			int x = e.getX();
-			int y = e.getY();
+			int xInitial = e.getX();
+			int yInitial = e.getY();
 			
-			if (x > 0 && x < 1750 && y > 35 && y < 1300)
-			{				
-				_currentState.setXPosition(x - _dragFromX);
-			    _currentState.setYPosition(y - _dragFromY);
+			if (xInitial > 0 && xInitial < 1750 && yInitial > 35 && yInitial < 1300)
+			{	
+				int x = xInitial - _dragFromX;
+				int y = yInitial - _dragFromY;
+				
+				_currentState.setXPosition(x);
+			    _currentState.setYPosition(y);
 			    
+			    // end redo block for a state move when the mouse is released 
 			    _undoManagement.Add(new UndoStateMove(this, false, _currentState, x, y));
 			    _undoManagement.BlockEnd();	
 			    
