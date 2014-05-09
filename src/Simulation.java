@@ -110,7 +110,7 @@ public class Simulation
 	// End get methods
 	
 	// PRE:
-	// POST:
+	// POST: All of the state drawable objects are added to their own array
 	private void initializeStates(ArrayList<DrawableObject> objects)
 	{
 		_states = new ArrayList<State>();
@@ -124,7 +124,7 @@ public class Simulation
 	}
 	
 	// PRE:
-	// POST:
+	// POST: All of the transition drawable objects are added to their own array
 	private void initializeTransitions(ArrayList<DrawableObject> objects)
 	{
 		_transitions = new ArrayList<Transition>();
@@ -232,7 +232,7 @@ public class Simulation
 	
 	// PRE: One or more transitions have been added to the canvas
 	// POST: Goes through all of the states and checks to see
-	// whether each state has a transition on both 0 and 1
+	// whether each state has one transition on both 0 and 1
 	private boolean validateTransitions()
 	{
 		boolean valid1 = true; // checks whether each state has a transition on 1 and 0
@@ -496,7 +496,11 @@ public class Simulation
 		}
 	}
 	
-	
+	// PRE: Play button is selected 
+	// POST: If the end of the tape
+	// has been reached reset the tape and all of the other 
+	// windows in the output panel to start simulation from the
+	// beginning
 	public void beginSimulation()
 	{
 		if (_currentSymbolOnTape == _tape.length())
