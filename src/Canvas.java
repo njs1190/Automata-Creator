@@ -1,25 +1,36 @@
 // Canvas.java
+// Canvas.java
 // Author: Jidaeno
 // Course: CSC4910
 // Description: This class is used to handle the creation of an automaton.
 
 package automataCreator;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.event.EventListenerList;
-
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
+
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.event.EventListenerList;
    
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 {
@@ -52,13 +63,13 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     private JMenuItem _deleteState;
     private JMenu _deleteTransition;
     
-    
     // PRE: myCanvas object is instantiated with no parameters
     // POST: myCanvas object is initialized
     public Canvas()
     {  
     	_drawableObjects = new ArrayList<DrawableObject>();
     	_undoManagement = new UndoManagement();
+ 
     }
     
     // PRE: A test is opened from the main window
@@ -76,8 +87,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     		{
     			if (o instanceof State)
     			{
-    				((State)o).setCurrent(false);
+    				State state = (State)o;
     				_states++;
+    				state.setCurrent(false);
     			}
     			
     			else if (o instanceof Transition)
@@ -118,6 +130,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
     	{
     		_undoManagement.Empty();
     	}
+
+    	sendCanvasEvent();
     }
     
     // Set methods
@@ -237,12 +251,14 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 			{
 				_undoManagement.BlockBegin();
 		        _undoManagement.Add(new UndoStateMove(this, true, state, xInitial, yInitial));
-		        
-				_dragFromX = xInitial - _stateX;  // how far from left
-	            _dragFromY = yInitial - _stateY;  // how far from top
+		        		        
 	            _currentState = state;
+	            
 			}
-		}			
+			_dragFromX = xInitial - state.getXPosition();  // how far from left
+            _dragFromY = yInitial - state.getYPosition();  // how far from top
+		}
+		
 	}
 	
 	// PRE: Mouse dragged
@@ -255,9 +271,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		if (SwingUtilities.isLeftMouseButton(e) && _currentState != null)
 		{
 			if (x > 0 && x < 1750 && y > 35 && y < 1300)
-			{
-				_currentState.setXPosition(x);
-	            _currentState.setYPosition(y);
+			{				
+				_currentState.setXPosition(x - _dragFromX);
+	            _currentState.setYPosition(y - _dragFromY);
 	            
 	            repaint();
 			}
@@ -279,10 +295,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 			int y = e.getY();
 			
 			if (x > 0 && x < 1750 && y > 35 && y < 1300)
-			{
-
-				_currentState.setXPosition(x);
-			    _currentState.setYPosition(y);
+			{				
+				_currentState.setXPosition(x - _dragFromX);
+			    _currentState.setYPosition(y - _dragFromY);
 			    
 			    _undoManagement.Add(new UndoStateMove(this, false, _currentState, x, y));
 			    _undoManagement.BlockEnd();	
@@ -409,7 +424,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		});	
 
 		_delete = new JMenu("Delete");
-		ImageIcon deleteIcon = new ImageIcon("delete.png");            
+		ImageIcon deleteIcon = new ImageIcon(getClass().getResource("delete.png"));            
         _delete.setIcon(deleteIcon);
        
         _deleteState = new JMenuItem("State");
@@ -608,7 +623,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		_states++;
 		
 		endUndoCreateDelete();
-		  
+		
 		repaint();
 		
 		// Create and send canvas event		
@@ -678,11 +693,15 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		// it does then just modify the symbol
 		// otherwise, if it does not exist then create the transition
 		boolean exists = false;
+		int _transitionType = 1;
 		for (int i = 0; i < _drawableObjects.size() && !exists; i++)
 		{			
 			if (_drawableObjects.get(i) instanceof Transition)
 			{
 				Transition t = (Transition) _drawableObjects.get(i);
+				if ((t.getFrom() == from && t.getTo() == to)||
+						(from == t.getFrom() && to == t.getTo()))
+					_transitionType = 2;
 				if (t.getFrom() == from && t.getTo() == to)
 				{
 					exists = true;
@@ -704,7 +723,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		{
 			beginUndoCreateDelete();			
 
-			DrawableObject obj = new Transition(from, to, symbol, false);
+			DrawableObject obj = new Transition(from, to, symbol, false, _transitionType);
 			_drawableObjects.add(obj);
 			
 			endUndoCreateDelete();
@@ -771,6 +790,15 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		return state;		
 	}
 	
+	// PRE: A change is made to the canvas
+	// POST: The insert start state options are
+	// enabled or disabled 
+	public void enableStartStates(boolean enable)
+	{
+		_start.setEnabled(enable);
+		_startA.setEnabled(enable);
+	}
+	
 	public void undo()
 	{
 		_undoManagement.Undo();
@@ -785,7 +813,14 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	// POST: The image of the canvas is saved to the system clip board
 	public void copyCanvas()
 	{	
-		BufferedImage canvasCopy = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_RGB); 
+		int max_x = getMaxX(); // get the greatest x position so the entire canvas doesn't have to be copied
+		int max_y = getMaxY(); // get the greatest y position so the entire canvas doesn't have to be copied 
+
+		max_x = max_x + 100;
+		max_y = max_y + 100;		
+		
+		//BufferedImage canvasCopy = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_RGB); 
+		BufferedImage canvasCopy = new BufferedImage(max_x, max_y, BufferedImage.TYPE_INT_RGB); 
 		// paint the canvas onto the canvas copy that will
 		// copied to the clip board 
 		paint(canvasCopy.getGraphics());  
@@ -793,6 +828,50 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();		
 		ClipboardImage clipboardImage = new ClipboardImage(canvasCopy);		
 		clipboard.setContents(clipboardImage, clipboardImage);	
+	}
+	
+	// PRE: 
+	// POST: the state that is the farthest along the canvas x position
+	// is returned 
+	public int getMaxX()
+	{
+		int max = 0;
+		for (DrawableObject obj : _drawableObjects)
+		{
+			if (obj instanceof State)
+			{
+				State state = (State)obj;
+				if (state.getXPosition() > max)
+				{
+					max = state.getXPosition();
+				}
+			}
+		}
+		
+		return max;
+		
+	}
+	
+	// PRE: 
+	// POST: the state that is the farthest along the canvas y position
+	// is returned 
+	public int getMaxY()
+	{
+		int max = 0;
+		for (DrawableObject obj : _drawableObjects)
+		{
+			if (obj instanceof State)
+			{
+				State state = (State)obj;
+				if (state.getYPosition() > max)
+				{
+					max = state.getYPosition();
+				}
+			}
+		}
+		
+		return max;
+		
 	}
 
 	// PRE: The clear canvas menu option has been chosen
