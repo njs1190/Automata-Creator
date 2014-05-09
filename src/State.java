@@ -132,6 +132,7 @@ public class State extends DrawableObject
 			
 		try 
 		{
+			// get the image for the state 
 			if (_type == Data.StateType.START)
 			{
 				if (_current)
@@ -186,7 +187,10 @@ public class State extends DrawableObject
 				}
 			}
 			
+			// the image is a url, so create a buffered image that can be shown in a JPanel
 			image = ImageIO.read(url.openStream());
+			
+			// draw the image on the JPanel
 			if (_type == Data.StateType.START || _type == Data.StateType.STARTACCEPT)
 			{
 				g.drawImage(image, _xPosition, _yPosition, 67, 50, null);	
@@ -196,6 +200,7 @@ public class State extends DrawableObject
 				g.drawImage(image, _xPosition, _yPosition, 50, 50, null);
 			}
 			
+			// Label the state 
 			// Center of circle for names with numbers under 10
 			if (_number < 10)
 			{
