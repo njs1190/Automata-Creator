@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 
@@ -125,7 +126,8 @@ public class State extends DrawableObject
 	// Inherited methods
 	public void Draw(Graphics g)
 	{
-		File file = null;
+		//File file = null;
+		URL url = null;
 		BufferedImage image = null;
 			
 		try 
@@ -134,12 +136,12 @@ public class State extends DrawableObject
 			{
 				if (_current)
 				{
-					file = new File("canvasStartSim.gif");
+					url = getClass().getResource("canvasStartSim.gif");
 				}
 				
 				else
 				{
-					file = new File("canvasStart.gif");
+					url = getClass().getResource("canvasStart.gif");
 				}
 			}
 			
@@ -147,12 +149,12 @@ public class State extends DrawableObject
 			{
 				if (_current)
 				{
-					file = new File("canvasStartASim.gif");
+					url = getClass().getResource("canvasStartASim.gif");
 				}
 				
 				else
 				{
-					file = new File("canvasStartA.gif");
+					url = getClass().getResource("canvasStartA.gif");
 				}
 			}
 			
@@ -160,12 +162,12 @@ public class State extends DrawableObject
 			{
 				if (_current)
 				{
-					file = new File("canvasIntermediateSim.gif");
+					url = getClass().getResource("canvasIntermediateSim.gif");
 				}
 				
 				else
 				{
-					file = new File("canvasIntermediate.gif");
+					url = getClass().getResource("canvasIntermediate.gif");
 				}
 			}
 			
@@ -173,16 +175,18 @@ public class State extends DrawableObject
 			{
 				if (_current)
 				{
-					file = new File("canvasAcceptSim.gif");
+					url = getClass().getResource("canvasAcceptSim.gif");
+					
+
 				}
 				
 				else
 				{
-					file = new File("canvasAccept.gif");
+					url = getClass().getResource("canvasAccept.gif");
 				}
 			}
 			
-			image = ImageIO.read(file);
+			image = ImageIO.read(url.openStream());
 			if (_type == Data.StateType.START || _type == Data.StateType.STARTACCEPT)
 			{
 				g.drawImage(image, _xPosition, _yPosition, 67, 50, null);	
