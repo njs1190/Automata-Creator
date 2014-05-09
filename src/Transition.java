@@ -283,7 +283,7 @@ public class Transition extends DrawableObject
 				e.printStackTrace();
 			}
 			
-			// Draw image
+			// Draw image and symbol
 			if (_from.getType() == Data.StateType.START || _from.getType() == Data.StateType.STARTACCEPT)
 			{
 				g.drawImage(image, x + 29, y - 25, 25, 25, null);
