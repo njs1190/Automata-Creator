@@ -6,19 +6,30 @@
 
 package automataCreator;
 
-import java.awt.event.*;
-import java.util.EventListener;
-import java.util.EventObject;
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 
-import javax.swing.*;
-import javax.swing.event.EventListenerList;
+import javax.print.DocFlavor;
+import javax.print.DocFlavor.URL;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 
 
 public class Menu 
 {	
 	private MainFrame _mainFrame;
 	private StringInput _input;
-	private JOptionPane _aboutBox;
 	
 	private JMenuBar _menuBar;
 	private JMenu _file;
@@ -28,15 +39,20 @@ public class Menu
 	
 	// file
 	private JMenuItem _newAutomata;
+	private Icon _newIcon;
 	private JMenu _save;
+	private ImageIcon _saveIcon;
 	private JMenuItem _fileSave;
 	private JMenuItem _imageSave;
 	private JMenuItem _importFile;
+	private Icon _importIcon;
 	private JMenuItem _close;
 	
 	// edit
 	private JMenuItem _undo;
+	private ImageIcon _undoIcon;
 	private JMenuItem _redo;
+	private ImageIcon _redoIcon;
 	private JMenuItem _copyCanvas;
 	private JMenuItem _clearCanvas;
 	
@@ -50,8 +66,8 @@ public class Menu
 
 	
 	// help
-	private JMenuItem _about;
 	private JMenuItem _quickHelp;
+	private ImageIcon _helpIcon;
 
 	public Menu(MainFrame mainFrame)
 	{
@@ -81,8 +97,8 @@ public class Menu
         
         // Add new menu item and action listener    
         _newAutomata = new JMenuItem("New");
-        Icon newIcon = defaults.getIcon( "FileView.fileIcon" );             
-        _newAutomata.setIcon(newIcon);
+        _newIcon = defaults.getIcon( "FileView.fileIcon" );             
+        _newAutomata.setIcon(_newIcon);
         _newAutomata.addActionListener(new ActionListener()
         {
           public void actionPerformed(ActionEvent e) 
@@ -94,8 +110,8 @@ public class Menu
         
         // Parent save menu 
         _save = new JMenu("Save");
-        ImageIcon saveIcon = new ImageIcon("save.png");
-        _save.setIcon(saveIcon); 
+        _saveIcon = new ImageIcon(getClass().getResource("save.png"));
+        _save.setIcon(_saveIcon); 
         
         // Add save file menu items and their corresponding action listeners
         _fileSave = new JMenuItem("Automota Creator File");
@@ -120,8 +136,8 @@ public class Menu
         
         // Add import file menu item and its corresponding action listener
         _importFile = new JMenuItem("Import");
-        Icon importIcon = defaults.getIcon( "FileView.directoryIcon");  
-        _importFile.setIcon(importIcon);
+        _importIcon = defaults.getIcon( "FileView.directoryIcon");  
+        _importFile.setIcon(_importIcon);
         _importFile.addActionListener(new ActionListener()
         {
           public void actionPerformed(ActionEvent e) 
@@ -160,8 +176,8 @@ public class Menu
         // Add undo edit menu item and action listener
         _undo = new JMenuItem("Undo");
         _undo.setAccelerator(KeyStroke.getKeyStroke('Z', KeyEvent.CTRL_DOWN_MASK));
-        ImageIcon undoIcon = new ImageIcon("undo.png");            
-        _undo.setIcon(undoIcon);
+        _undoIcon = new ImageIcon(getClass().getResource("undo.png"));            
+        _undo.setIcon(_undoIcon);
         // begin with undo disabled
         _undo.setEnabled(false);
         _undo.addActionListener(new ActionListener()
@@ -176,8 +192,8 @@ public class Menu
         // Add re-do edit menu item and action listener
         _redo = new JMenuItem("Redo");
         _redo.setAccelerator(KeyStroke.getKeyStroke('Y', KeyEvent.CTRL_DOWN_MASK));
-        ImageIcon redoIcon = new ImageIcon("redo.png");            
-        _redo.setIcon(redoIcon);
+        _redoIcon = new ImageIcon(getClass().getResource("redo.png"));           
+        _redo.setIcon(_redoIcon);
         // begin with redo disabled
         _redo.setEnabled(false);
         _redo.addActionListener(new ActionListener()
@@ -297,34 +313,34 @@ public class Menu
         
         // Build Help Menu
         
-        // Add about help menu item and action listener
-        _about = new JMenuItem("About"); 
-        ImageIcon aboutIcon = new ImageIcon("information.png");            
-        _about.setIcon(aboutIcon);
-        _about.addActionListener(new ActionListener()
-        {
-          public void actionPerformed(ActionEvent e) 
-          {
-        	  
-        	  JOptionPane.showMessageDialog(
-        			  
-        			  
-        		_aboutBox, "The Automata Creator is a standalone desktop application that can be \n "
-        				 +"installed across multiple platforms such as Windows and Linux.The \n"
-        				 +"Automata Creator will allow both educators and students to create, edit,\n"
-        				 +"simulate, and store a DFA. Additionally, the application will allow users\n "
-        				 +"to import an existing DFA and then perform any normal operations upon that\n "
-        				 + "DFA.", "About Automata Creator", _aboutBox.INFORMATION_MESSAGE, null);
-          }        	
-        });
-        
         // Add quick help menu item and action listener
         _quickHelp = new JMenuItem("Quick Help");   
-        ImageIcon helpIcon = new ImageIcon("help.png");            
-        _quickHelp.setIcon(helpIcon);
+        _helpIcon = new ImageIcon(getClass().getResource("help.png"));          
+        _quickHelp.setIcon(_helpIcon);
+        _quickHelp.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e) 
+          {        	  
+        	  try 
+        	  {
+            	  java.net.URL url = getClass().getResource("automataCreatorHelpDocument.pdf");
+            	  File file = new File(url.getPath());
+
+            	  if (file.exists())
+            	  {
+            		  Desktop.getDesktop().open(file);
+            	  }
+			  } 
+        	  catch (IOException e1) 
+        	  {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			  }        	  
+          }  
+          
+        });
         
         // Add all created sub menu items to help menu
-        _help.add(_about);
         _help.add(_quickHelp);
         
         // End build Help menu
@@ -374,6 +390,12 @@ public class Menu
 			}
      	});
 		
+	}
+	
+	public void enableStartStates(boolean enable)
+	{
+		_start.setEnabled(enable);
+		_startAccept.setEnabled(enable);
 	}
 }
 
